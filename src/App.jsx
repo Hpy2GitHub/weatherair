@@ -1,5 +1,5 @@
 // App.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { VisibilityProvider } from './context/VisibilityContext';
 import ConditionalRenderer from './components/ConditionalRenderer';
 import CustomizePanel from './components/CustomizePanel';
@@ -17,12 +17,13 @@ import SkyEvents from './SkyEvents';
 import AQITable from './AQITable';
 import WeatherRadar from './WeatherRadar';
 import ForecastHighlights from './ForecastHighlights';
+import RefreshButton from './RefreshButton';
 //import HourlyPrecipitation from './HourlyPrecipitation';
 
 import { useWeatherData } from './hooks/useWeatherData';
 import './App.css';
 
-const toC   = (f) => Math.round((f - 32) * 5 / 9);
+const toC = (f) => Math.round((f - 32) * 5 / 9);
 const fmtTemp = (f, unit) => unit === 'f' ? `${Math.round(f)}°` : `${toC(f)}°`;
 
 export default function App() {
@@ -39,6 +40,10 @@ export default function App() {
     }
   });
 
+  // Refs for scroll to top functionality
+  const appTopRef = useRef(null);
+  const previousPhase = useRef(phase);
+
   // Persist preferences
   useEffect(() => {
     localStorage.setItem('weatherUnit', unit);
@@ -52,7 +57,33 @@ export default function App() {
     }
   }, [selectedLocation]);
 
-  // ── FIX: activeCoords must be declared BEFORE the effect that uses it ────────
+  // ---- scroll to top ---
+  // Scroll to top when:
+  // 1. Initial load completes (phase changes from 'loading' to 'ready')
+  // 2. After manual refresh (data updates triggered by RefreshButton)
+  useEffect(() => {
+    if (phase === 'ready' && previousPhase.current === 'loading') {
+      // Use requestAnimationFrame for more reliable DOM readiness
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (appTopRef.current) {
+            appTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }, 150);
+      });
+    }
+    previousPhase.current = phase;
+  }, [phase]);
+
+  // Initial scroll to top on page load (just in case)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  // ---- scroll to top ---
+
+  // FIX: activeCoords must be declared BEFORE the effect that uses it
   //
   // The previous code declared activeCoords after the useEffect, which caused
   // the effect to silently fall back to undefined/stale coords on some renders.
@@ -63,7 +94,6 @@ export default function App() {
   // Fix: declare activeCoords first, use selectedLocation directly in the effect,
   // and skip firing when selectedLocation is null (the hook's own geolocation
   // effect handles the initial fetch — we don't need to duplicate it here).
-  // ─────────────────────────────────────────────────────────────────────────────
 
   const activeCoords = selectedLocation ?? coords;
 
@@ -81,18 +111,18 @@ export default function App() {
   const fmt = (f) => fmtTemp(f, unit);
 
   if (phase === 'loading') return <Loader />;
-  if (phase === 'error')   return <ErrorView message={error} />;
+  if (phase === 'error') return <ErrorView message={error} />;
 
   return (
     <VisibilityProvider>
-      <div className="app">
-
-        {/* Header with customize button */}
+      <div className="app" ref={appTopRef}>
+        {/* Header with customize button and refresh button */}
         <div className="header-wrapper" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <ConditionalRenderer componentId="header">
-            <WeatherHeader location={location} unit={unit} setUnit={setUnit} />
-          </ConditionalRenderer>
-          <CustomizeButton />
+          <WeatherHeader location={location} unit={unit} setUnit={setUnit} />
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <RefreshButton />
+            <CustomizeButton />
+          </div>
         </div>
 
         {/* Location Picker */}
@@ -141,7 +171,7 @@ export default function App() {
         <ConditionalRenderer componentId="nwsforecast">
           <ForecastHighlights lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
-        
+
         {/* Weather Radar - Keep this separate */}
         <ConditionalRenderer componentId="radar">
           <WeatherRadar lat={activeCoords.lat} lon={activeCoords.lon} />

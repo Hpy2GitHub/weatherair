@@ -1,5 +1,5 @@
 // hooks/useWeatherData.js
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useDebug } from '../DebugContext';
 
 export const useWeatherData = () => {
@@ -9,8 +9,16 @@ export const useWeatherData = () => {
   const [coords, setCoords] = useState({ lat: 40.3471, lon: -74.0644 });
   const [error, setError] = useState('');
   const { postMessage } = useDebug();
+  const isFetching = useRef(false); // Prevent multiple simultaneous fetches
 
   const fetchWeather = useCallback(async (lat, lon) => {
+    // Prevent multiple simultaneous fetches
+    if (isFetching.current) {
+      postMessage(`Weather: Fetch already in progress, skipping`, 'debug');
+      return;
+    }
+    
+    isFetching.current = true;
     postMessage(`Weather: Starting fetch for lat=${lat}, lon=${lon}`, 'info');
     setPhase('loading');
     
@@ -40,18 +48,6 @@ export const useWeatherData = () => {
         geoRes.json(),
       ]);
 
-      // --- DEBUGGING BLOCK START ---
-      if (weatherData.daily && weatherData.daily.time) {
-        postMessage("--- DAILY DATA CHECK ---", "debug");
-        weatherData.daily.time.slice(0, 4).forEach((date, index) => {
-          const dayName = new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long' });
-          const maxTemp = weatherData.daily.temperature_2m_max[index];
-          postMessage(`Index ${index}: Date=${date} (${dayName}), MaxTemp=${maxTemp}°F`, "debug");
-        });
-        postMessage("------------------------", "debug");
-      }
-      // --- DEBUGGING BLOCK END ---
-
       postMessage(`Weather: Data received - Temp=${weatherData.current?.temperature_2m}°F`, 'info');
       postMessage(`Weather: Location found - ${geoData.address?.city || geoData.address?.town}`, 'info');
 
@@ -67,27 +63,35 @@ export const useWeatherData = () => {
       postMessage(`Weather Error: ${err.message}`, 'error');
       setError('Could not load weather data. Please try again.');
       setPhase('error');
+    } finally {
+      isFetching.current = false;
     }
   }, [postMessage]);
 
-  // Geolocation
+  // Geolocation - only run once on mount
   useEffect(() => {
+    let isMounted = true;
+    
     if (!navigator.geolocation) {
-      fetchWeather(coords.lat, coords.lon);
+      if (isMounted) fetchWeather(coords.lat, coords.lon);
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude: lat, longitude: lon } }) => {
-        setCoords({ lat, lon });
-        fetchWeather(lat, lon);
+        if (isMounted) {
+          setCoords({ lat, lon });
+          fetchWeather(lat, lon);
+        }
       },
       () => {
-        fetchWeather(coords.lat, coords.lon);
+        if (isMounted) fetchWeather(coords.lat, coords.lon);
       },
       { timeout: 10_000 }
     );
-  }, []);
+    
+    return () => { isMounted = false; };
+  }, []); // Empty deps - only run once
 
   return {
     phase,
