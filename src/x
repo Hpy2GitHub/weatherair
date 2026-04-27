@@ -1,0 +1,11 @@
+      <HourlyForecast hourly={hourly} fmt={fmt} />
+
+      <AirQuality lat={coords.lat} lon={coords.lon} />
+
+      {/* ── Sky Events (sunrise/sunset arc, golden hour, moon phase) ── */}
+      <SkyEvents lat={coords.lat} lon={coords.lon} />
+
+      <footer className="app-footer">
+        Open-Meteo · No ads · No tracking
+      </footer>
+    </div>

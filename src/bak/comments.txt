@@ -1,1 +1,16 @@
 20260427-114012-App-bak.disabled:
+20260427-074320-App-bak.disabled:
+20260427-074942-SkyEvents-bak.disabled:
+20260427-075912-SkyEvents-bak.disabled: ugly and missing the graph
+20260427-075522-App-bak.disabled: skyevents only (lost others)
+20260427-074908-Skyevents.css:
+20260427-080545-SkyEvents-bak.disabled:
+20260427-082914-SkyEvents-bak.disabled: 2 arcs under
+20260427-082914-SkyEvents-bak.disabled:
+20260427-083818-SkyEvents-bak.disabled: better
+20260427-084214-SkyEvents-bak.disabled: before debug
+20260427-085052-SkyEvents-bak.disabled: broken
+20260427-075522-App-bak.disabled: has sun/moon
+20260427-075522-App-bak.disabled: missing sections
+20260427-091127-App-bak.disabled: blank
+20260427-091127-App-bak.disabled:

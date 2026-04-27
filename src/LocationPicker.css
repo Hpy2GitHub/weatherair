@@ -1,0 +1,151 @@
+.location-picker {
+  position: relative;
+  z-index: 10;
+}
+
+.lp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Buttons ─────────────────────────── */
+.lp-btn {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.9);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lp-btn:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.lp-btn.active,
+.lp-btn.open {
+  background: rgba(255,255,255,0.14);
+  border-color: rgba(255,255,255,0.28);
+}
+
+.lp-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.lp-current {
+  padding: 0 10px;
+  font-size: 1.1rem;
+}
+
+/* ── Search input ────────────────────── */
+.lp-search-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.lp-search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.9);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.lp-search-input::placeholder {
+  color: rgba(255,255,255,0.35);
+}
+
+.lp-search-input:focus {
+  border-color: rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.1);
+}
+
+.lp-searching {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+  pointer-events: none;
+}
+
+/* ── Dropdown ────────────────────────── */
+.lp-dropdown-wrapper {
+  position: relative;
+}
+
+.lp-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 200px;
+  max-height: 280px;
+  overflow-y: auto;
+  background: rgba(20, 20, 30, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.lp-search-dropdown {
+  left: 0;
+  right: 0;
+  min-width: 0;
+}
+
+.lp-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255,255,255,0.85);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.lp-dropdown-item:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.lp-dropdown-item.selected {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.lp-city {
+  font-weight: 500;
+}
+
+.lp-region {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.45);
+}
