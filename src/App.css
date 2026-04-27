@@ -254,3 +254,55 @@ body {
 .fade-in-2 { animation: fadeUp 0.5s ease 0.08s forwards; opacity: 0; }
 .fade-in-3 { animation: fadeUp 0.5s ease 0.16s forwards; opacity: 0; }
 .fade-in-4 { animation: fadeUp 0.5s ease 0.24s forwards; opacity: 0; }
+
+/* --- try to fix the Samsung Galaxy S23 a little better (too wide now) --- */
+
+/* In App.css - Add after existing styles */
+
+/* Reduce overall padding on very small screens */
+@media (max-width: 380px) {
+  .app {
+    padding: 20px 12px 64px;
+  }
+  
+  /* Tighter card padding */
+  .card {
+    padding: 12px 14px;
+  }
+}
+
+/* Prevent SVG graphs from overflowing */
+.hf-scroll {
+  /* Remove or reduce the fade gradient on small screens */
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+/* Ensure long text wraps properly */
+.stat-row, .day-row, .aqi-row {
+  font-size: 11px;
+  gap: 8px;
+}
+
+/* Prevent hero temperature from being too wide */
+.hero-temp {
+  font-size: clamp(72px, 20vw, 104px) !important;
+}
+
+/* Ensure the customize panel doesn't overflow */
+.customize-panel {
+  max-width: 340px;
+  margin: 0 8px;
+}
+
+/* Location picker search input */
+.lp-search-input {
+  font-size: 0.8rem;
+  padding: 0 8px;
+}
+
+/* Footer text wrap */
+.footer {
+  font-size: 8px;
+  letter-spacing: 1px;
+}

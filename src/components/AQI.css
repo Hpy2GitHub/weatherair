@@ -1,0 +1,53 @@
+/* Add to AQI.css */
+
+/* Make rows more compact on small screens */
+@media (max-width: 380px) {
+  .aqi-row {
+    padding: 10px 8px;
+    gap: 6px;
+  }
+  
+  .aqi-color-name {
+    width: 55px;
+    font-size: 11px;
+  }
+  
+  .aqi-level {
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .aqi-range {
+    font-size: 9px;
+  }
+  
+  .aqi-expand-icon {
+    margin-left: 4px;
+    font-size: 12px;
+  }
+  
+  .aqi-description {
+    padding: 10px 8px 14px 14px;
+    font-size: 10px;
+  }
+}
+
+/* Alternative: If you want to permanently slim down the table */
+.aqi-row {
+  padding: 12px 10px;
+  gap: 8px;
+}
+
+.aqi-color-name {
+  width: 60px; /* Reduced from 70px */
+}
+
+/* Allow level text to truncate if needed */
+.aqi-level {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0; /* Important for flex children to respect overflow */
+}
