@@ -88,6 +88,14 @@ export const componentRegistry = [
     category: 'forecast',
     required: false,
   },
+  {
+    id: 'radar',
+    name: 'Weather Radar',
+    description: 'Government weather map(s?)',
+    defaultVisible: true,
+    category: 'forecast',
+    required: false,
+  },
 ];
 
 export const getDefaultVisibility = () => {

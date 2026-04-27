@@ -1,0 +1,197 @@
+// WeatherRadar.jsx
+//
+// Displays NOAA NEXRAD radar overlaid on a dark map, centered on the active
+// location.  Radar tiles come from the Iowa Environmental Mesonet (IEM), which
+// is the canonical free proxy for NWS government radar data — no API key needed.
+//
+// Layers available:
+//   nexrad-n0q  – Base Reflectivity  (how much precipitation, best for rain/snow)
+//   nexrad-n0v  – Radial Velocity    (wind toward/away from radar site)
+//
+// Leaflet is loaded from CDN the first time this component mounts so you don't
+// need to add it to package.json.  Subsequent mounts reuse the cached scripts.
+
+import { useEffect, useRef, useState, useCallback } from 'react';
+import './WeatherRadar.css';
+
+// ─── Radar layer definitions ──────────────────────────────────────────────────
+
+const LAYERS = [
+  {
+    id: 'reflectivity',
+    label: 'Reflectivity',
+    // IEM NEXRAD base-reflectivity tiles (NWS N0Q product, ~5-min refresh)
+    url: 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/{z}/{x}/{y}.png',
+    attribution: 'NOAA/NWS NEXRAD · Iowa Environmental Mesonet',
+    opacity: 0.75,
+  },
+  {
+    id: 'velocity',
+    label: 'Velocity',
+    // IEM NEXRAD radial-velocity tiles (NWS N0V product)
+    url: 'https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0v-900913/{z}/{x}/{y}.png',
+    attribution: 'NOAA/NWS NEXRAD · Iowa Environmental Mesonet',
+    opacity: 0.75,
+  },
+];
+
+// ─── CDN loader (idempotent — safe to call multiple times) ────────────────────
+
+let leafletReady = false;
+let leafletCallbacks = [];
+
+function loadLeaflet(onReady) {
+  if (leafletReady) { onReady(); return; }
+  leafletCallbacks.push(onReady);
+  if (leafletCallbacks.length > 1) return; // already loading
+
+  // CSS
+  const link = document.createElement('link');
+  link.rel  = 'stylesheet';
+  link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  document.head.appendChild(link);
+
+  // JS
+  const script = document.createElement('script');
+  script.src   = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  script.onload = () => {
+    leafletReady = true;
+    leafletCallbacks.forEach((cb) => cb());
+    leafletCallbacks = [];
+  };
+  document.head.appendChild(script);
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+export default function WeatherRadar({ lat, lon }) {
+  const containerRef  = useRef(null);
+  const mapRef        = useRef(null);   // Leaflet map instance
+  const radarLayerRef = useRef(null);   // current radar tile layer
+  const markerRef     = useRef(null);   // location circle
+  const [activeLayer, setActiveLayer] = useState('reflectivity');
+  const [ready, setReady] = useState(false);
+
+  // ── Initialise map once Leaflet has loaded ──────────────────────────────────
+
+  const initMap = useCallback(() => {
+    if (!containerRef.current || mapRef.current) return;
+    const L = window.L;
+
+    // Dark CartoDB basemap — matches the app's navy/charcoal theme
+    const map = L.map(containerRef.current, {
+      center:      [lat, lon],
+      zoom:        7,
+      zoomControl: true,
+      attributionControl: false, // we'll show attribution ourselves
+    });
+
+    L.tileLayer(
+      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      { maxZoom: 19, subdomains: 'abcd' }
+    ).addTo(map);
+
+    // Initial radar layer
+    const layer = LAYERS.find((l) => l.id === 'reflectivity');
+    radarLayerRef.current = L.tileLayer(layer.url, {
+      opacity: layer.opacity,
+      tileSize: 256,
+    }).addTo(map);
+
+    // Location marker — subtle pulsing ring
+    markerRef.current = L.circle([lat, lon], {
+      radius:      800,
+      color:       '#60a5fa',
+      weight:      2,
+      fillColor:   '#60a5fa',
+      fillOpacity: 0.15,
+    }).addTo(map);
+
+    mapRef.current = map;
+    setReady(true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // lat/lon intentionally omitted — map position is handled by the separate effect below
+
+  useEffect(() => {
+    loadLeaflet(initMap);
+    return () => {
+      // Clean up on unmount
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current        = null;
+        radarLayerRef.current = null;
+        markerRef.current     = null;
+        setReady(false);
+      }
+    };
+  }, [initMap]);
+
+  // ── Re-centre when location changes ────────────────────────────────────────
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const L = window.L;
+
+    mapRef.current.setView([lat, lon], mapRef.current.getZoom(), { animate: true });
+
+    if (markerRef.current) {
+      markerRef.current.setLatLng([lat, lon]);
+    } else {
+      markerRef.current = L.circle([lat, lon], {
+        radius:      800,
+        color:       '#60a5fa',
+        weight:      2,
+        fillColor:   '#60a5fa',
+        fillOpacity: 0.15,
+      }).addTo(mapRef.current);
+    }
+  }, [lat, lon]);
+
+  // ── Swap radar layer when toggle changes ────────────────────────────────────
+
+  useEffect(() => {
+    if (!mapRef.current || !ready) return;
+    const L = window.L;
+
+    if (radarLayerRef.current) {
+      mapRef.current.removeLayer(radarLayerRef.current);
+    }
+
+    const layer = LAYERS.find((l) => l.id === activeLayer);
+    radarLayerRef.current = L.tileLayer(layer.url, {
+      opacity: layer.opacity,
+      tileSize: 256,
+    }).addTo(mapRef.current);
+  }, [activeLayer, ready]);
+
+  // ── Render ──────────────────────────────────────────────────────────────────
+
+  const currentLayerMeta = LAYERS.find((l) => l.id === activeLayer);
+
+  return (
+    <section className="card radar-card fade-in-4">
+      <div className="radar-header">
+        <p className="section-label" style={{ marginBottom: 0 }}>Weather Radar</p>
+        <div className="radar-layer-toggle">
+          {LAYERS.map((layer) => (
+            <button
+              key={layer.id}
+              className={`radar-toggle-btn${activeLayer === layer.id ? ' active' : ''}`}
+              onClick={() => setActiveLayer(layer.id)}
+            >
+              {layer.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Map container — Leaflet mounts here */}
+      <div ref={containerRef} className="radar-map" />
+
+      <p className="radar-attribution">
+        {currentLayerMeta.attribution}
+        <span className="radar-refresh">· ~5 min refresh</span>
+      </p>
+    </section>
+  );
+}
