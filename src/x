@@ -1,0 +1,2 @@
+// To Do: You'll want to make sure those new componentId values (hourly, airquality, skyevents, aqitable, footer) are 
+// registered in your VisibilityContext's componentRegistry if you want them to appear in the customize panel.

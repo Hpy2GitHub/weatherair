@@ -3,12 +3,12 @@ import { VisibilityProvider } from './context/VisibilityContext';
 import ConditionalRenderer from './components/ConditionalRenderer';
 import CustomizePanel from './components/CustomizePanel';
 import CustomizeButton from './components/CustomizeButton';
+import './App.css'
 import AirQuality from './AirQuality'
 import HourlyForecast from './HourlyForecast'
 import SkyEvents from './SkyEvents'
 import LocationPicker from './LocationPicker'
 import AQITable from './AQITable';
-import './App.css'
 
 // WMO weather interpretation codes → label + emoji
 const WMO = {
@@ -59,39 +59,15 @@ export default function App() {
   const [location, setLocation] = useState(null)
   const [coords,   setCoords]   = useState(DEFAULT_COORDS)
   const [error,    setError]    = useState('')
-
-  const [unit, setUnit] = useState(() =>
-    localStorage.getItem('weatherUnit') ?? 'f'
-  )
-
-  const [selectedLocation, setSelectedLocation] = useState(() => {
-    try {
-      const saved = localStorage.getItem('weatherLocation')
-      return saved ? JSON.parse(saved) : null
-    } catch {
-      return null
-    }
-  })
-
-  // Persist unit preference
-  useEffect(() => {
-    localStorage.setItem('weatherUnit', unit)
-  }, [unit])
-
-  // Persist selected location
-  useEffect(() => {
-    if (selectedLocation) {
-      localStorage.setItem('weatherLocation', JSON.stringify(selectedLocation))
-    } else {
-      localStorage.removeItem('weatherLocation')
-    }
-  }, [selectedLocation])
+  const [unit,     setUnit]     = useState('f')
+  const [selectedLocation, setSelectedLocation] = useState(null)
 
   // Determine which coordinates to use for weather
   const activeCoords = selectedLocation || coords
 
   useEffect(() => {
     if (!navigator.geolocation) {
+      // Already have default coords, just fetch weather
       fetchWeather(activeCoords.lat, activeCoords.lon)
       return
     }
@@ -162,9 +138,9 @@ export default function App() {
     }
   }
 
-  const toC     = (f) => Math.round((f - 32) * 5 / 9)
-  const fmt     = (f) => unit === 'f' ? `${Math.round(f)}°` : `${toC(f)}°`
-  const fmtTime = (d) => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  const toC     = (f)       => Math.round((f - 32) * 5 / 9)
+  const fmt     = (f)       => unit === 'f' ? `${Math.round(f)}°` : `${toC(f)}°`
+  const fmtTime = (d)       => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
 
   if (phase === 'loading') return <Loader />
   if (phase === 'error')   return <ErrorView message={error} />
@@ -173,109 +149,84 @@ export default function App() {
   const cond = getCondition(current.weather_code)
 
   return (
-    <VisibilityProvider>
-      <div className="app">
-        <CustomizeButton />
+    <div className="app">
 
-        {/* ── Header ─────────────────────────────────── */}
-        <ConditionalRenderer componentId="header">
-          <header className="header fade-in">
-            <div>
-              <h1 className="city">{location.city}</h1>
-              <p className="region">
-                {[location.region, location.country].filter(Boolean).join(' · ')}
-              </p>
+      {/* ── Header ─────────────────────────────────── */}
+      <header className="header fade-in">
+        <div>
+          <h1 className="city">{location.city}</h1>
+          <p className="region">
+            {[location.region, location.country].filter(Boolean).join(' · ')}
+          </p>
+        </div>
+        <div className="unit-toggle">
+          <button className={unit === 'f' ? 'active' : ''} onClick={() => setUnit('f')}>°F</button>
+          <button className={unit === 'c' ? 'active' : ''} onClick={() => setUnit('c')}>°C</button>
+        </div>
+      </header>
+
+      {/* ── Location Picker ────────────────────────── */}
+      <LocationPicker
+        currentCoords={coords}
+        currentName={location?.city}
+        onSelect={(loc) => setSelectedLocation(loc)}
+      />
+
+      {/* ── Hero temp ──────────────────────────────── */}
+      <section className="hero fade-in-2">
+        <div className="hero-icon">{cond.icon}</div>
+        <div className="hero-temp">{fmt(current.temperature_2m)}</div>
+        <div className="hero-cond">{cond.label}</div>
+        <div className="hero-feels">Feels like {fmt(current.apparent_temperature)}</div>
+      </section>
+
+      {/* ── Stats card ─────────────────────────────── */}
+      <section className="card fade-in-3">
+        <Stat label="Humidity"         value={`${current.relative_humidity_2m}%`} />
+        <Stat label="Wind"             value={`${Math.round(current.wind_speed_10m)} mph ${windDir(current.wind_direction_10m)}`} />
+        <Stat label="Precipitation"    value={`${current.precipitation.toFixed(2)}"`} />
+        <Stat label="Sunrise / Sunset" value={`${fmtTime(new Date(daily.sunrise[0]))} / ${fmtTime(new Date(daily.sunset[0]))}`} last />
+      </section>
+
+      {/* ── Hourly forecast ────────────────────────── */}
+      <HourlyForecast hourly={hourly} unit={unit} fmt={fmt} />
+
+      {/* ── 7-day forecast ─────────────────────────── */}
+      <section className="card fade-in-4">
+        <p className="section-label">7-Day Forecast</p>
+        {daily.time.map((dateStr, i) => {
+          const d     = new Date(dateStr)
+          const label = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : DAYS[d.getDay()]
+          const dc    = getCondition(daily.weather_code[i])
+          const pct   = daily.precipitation_probability_max[i]
+          const last  = i === daily.time.length - 1
+          return (
+            <div key={dateStr} className={`day-row${last ? ' last' : ''}`}>
+              <span className={`day-name${i === 0 ? ' today' : ''}`}>{label}</span>
+              <span className="day-icon">{dc.icon}</span>
+              <div className="precip-bar" title={`${pct}% chance of rain`}>
+                <div className="precip-fill" style={{ width: `${pct}%` }} />
+              </div>
+              <div className="day-range">
+                <span className="day-low">{fmt(daily.temperature_2m_min[i])}</span>
+                <span className="day-high">{fmt(daily.temperature_2m_max[i])}</span>
+              </div>
             </div>
-            <div className="unit-toggle">
-              <button className={unit === 'f' ? 'active' : ''} onClick={() => setUnit('f')}>°F</button>
-              <button className={unit === 'c' ? 'active' : ''} onClick={() => setUnit('c')}>°C</button>
-            </div>
-          </header>
-        </ConditionalRenderer>
+          )
+        })}
+      </section>
 
-        {/* ── Location Picker ────────────────────────── */}
-        <LocationPicker
-          currentCoords={coords}
-          currentName={location?.city}
-          onSelect={(loc) => setSelectedLocation(loc)}
-        />
+      <AirQuality lat={activeCoords.lat} lon={activeCoords.lon} />
 
-        {/* ── Hero temp ──────────────────────────────── */}
-        <ConditionalRenderer componentId="hero">
-          <section className="hero fade-in-2">
-            <div className="hero-icon">{cond.icon}</div>
-            <div className="hero-temp">{fmt(current.temperature_2m)}</div>
-            <div className="hero-cond">{cond.label}</div>
-            <div className="hero-feels">Feels like {fmt(current.apparent_temperature)}</div>
-          </section>
-        </ConditionalRenderer>
+      <AQITable />
 
-        {/* ── Stats card ─────────────────────────────── */}
-        <ConditionalRenderer componentId="stats">
-          <section className="card fade-in-3">
-            <Stat label="Humidity"         value={`${current.relative_humidity_2m}%`} />
-            <Stat label="Wind"             value={`${Math.round(current.wind_speed_10m)} mph ${windDir(current.wind_direction_10m)}`} />
-            <Stat label="Precipitation"    value={`${current.precipitation.toFixed(2)}"`} />
-            <Stat label="Sunrise / Sunset" value={`${fmtTime(new Date(daily.sunrise[0]))} / ${fmtTime(new Date(daily.sunset[0]))}`} last />
-          </section>
-        </ConditionalRenderer>
+      {/* ── Sky Events (sunrise/sunset arc, golden hour, moon phase) ── */}
+      <SkyEvents lat={activeCoords.lat} lon={activeCoords.lon} />
 
-        {/* ── Hourly forecast ────────────────────────── */}
-        <ConditionalRenderer componentId="hourly">
-          <HourlyForecast hourly={hourly} unit={unit} fmt={fmt} />
-        </ConditionalRenderer>
-
-        {/* ── 7-day forecast ─────────────────────────── */}
-        <ConditionalRenderer componentId="forecast">
-          <section className="card fade-in-4">
-            <p className="section-label">7-Day Forecast</p>
-            {daily.time.map((dateStr, i) => {
-              const d     = new Date(dateStr)
-              const label = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : DAYS[d.getDay()]
-              const dc    = getCondition(daily.weather_code[i])
-              const pct   = daily.precipitation_probability_max[i]
-              const last  = i === daily.time.length - 1
-              return (
-                <div key={dateStr} className={`day-row${last ? ' last' : ''}`}>
-                  <span className={`day-name${i === 0 ? ' today' : ''}`}>{label}</span>
-                  <span className="day-icon">{dc.icon}</span>
-                  <div className="precip-bar" title={`${pct}% chance of rain`}>
-                    <div className="precip-fill" style={{ width: `${pct}%` }} />
-                  </div>
-                  <div className="day-range">
-                    <span className="day-low">{fmt(daily.temperature_2m_min[i])}</span>
-                    <span className="day-high">{fmt(daily.temperature_2m_max[i])}</span>
-                  </div>
-                </div>
-              )
-            })}
-          </section>
-        </ConditionalRenderer>
-
-        {/* ── Air Quality ────────────────────────────── */}
-        <ConditionalRenderer componentId="airquality">
-          <AirQuality lat={activeCoords.lat} lon={activeCoords.lon} />
-        </ConditionalRenderer>
-
-        {/* ── Sky Events ─────────────────────────────── */}
-        <ConditionalRenderer componentId="skyevents">
-          <SkyEvents lat={activeCoords.lat} lon={activeCoords.lon} />
-        </ConditionalRenderer>
-
-        {/* ── AQI Table ──────────────────────────────── */}
-        <ConditionalRenderer componentId="aqitable">
-          <AQITable />
-        </ConditionalRenderer>
-
-        <ConditionalRenderer componentId="footer">
-          <footer className="app-footer">
-            Open-Meteo · No ads · No tracking
-          </footer>
-        </ConditionalRenderer>
-
-        <CustomizePanel />
-      </div>
-    </VisibilityProvider>
+      <footer className="app-footer">
+        Open-Meteo · No ads · No tracking
+      </footer>
+    </div>
   )
 }
 
