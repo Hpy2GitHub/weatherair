@@ -1,0 +1,27 @@
+{
+  "name": "weather-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:npm": "vite build --mode npm",
+    "build:apache": "tsc && vite build --mode apache",
+    "build:github": "vite build --mode github",
+    "build:check": "tsc && vite build",
+    "type-check": "tsc --noEmit",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "6.0.3",
+    "vite": "^5.4.2",
+    "vite-plugin-pwa": "1.2.0"
+  }
+}
