@@ -1,6 +1,6 @@
 // src/context/VisibilityContext.jsx
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { componentRegistry, getDefaultVisibility } from '../config/componentRegistry';
+import { componentRegistry, getDefaultVisibility } from '../config/ComponentRegistry';
 
 const VisibilityContext = createContext();
 
