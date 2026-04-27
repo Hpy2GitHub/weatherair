@@ -65,11 +65,27 @@ export const componentRegistry = [
     required: false,
   },
   {
+    id: 'debugconsole',  // ADD THIS
+    name: 'Debug Console',
+    description: 'Developer console for logging API data',
+    defaultVisible: false,  // Off by default, users can enable
+    category: 'developer',
+    required: false,
+  },
+  {
     id: 'footer',
     name: 'Footer',
     description: 'App footer with credits',
     defaultVisible: true,
     category: 'info',
+    required: false,
+  },
+  {
+    id: 'precipitation',
+    name: 'Precipitation Forecast',
+    description: '24-hour precipitation probability and type chart',
+    defaultVisible: true,
+    category: 'forecast',
     required: false,
   },
 ];

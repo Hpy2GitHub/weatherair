@@ -1,0 +1,120 @@
+import React, { useRef, useEffect } from 'react';
+import { useDebug } from './DebugContext';
+
+const DebugComponent = () => {
+  const { messages, clearMessages } = useDebug();
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const getMessageStyle = (type) => {
+    switch (type) {
+      case 'error': return { color: '#ff6b6b', borderLeftColor: '#ff6b6b' };
+      case 'warn': return { color: '#ffd93d', borderLeftColor: '#ffd93d' };
+      case 'debug': return { color: '#6bcf7f', borderLeftColor: '#6bcf7f' };
+      default: return { color: '#00d8ff', borderLeftColor: '#00d8ff' };
+    }
+  };
+
+  if (messages.length === 0) {
+    return (
+      <div style={{
+        position: 'fixed',
+        bottom: 10,
+        right: 10,
+        backgroundColor: '#1e1e1e',
+        color: '#888',
+        padding: '8px 12px',
+        borderRadius: '4px',
+        fontFamily: 'monospace',
+        fontSize: '12px',
+        zIndex: 9999
+      }}>
+        🐛 Debug Ready
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      position: 'fixed',
+      bottom: 0,
+      right: 0,
+      width: '500px',
+      height: '300px',
+      backgroundColor: '#1e1e1e',
+      color: '#d4d4d4',
+      border: '1px solid #333',
+      borderRadius: '4px',
+      fontFamily: 'monospace',
+      fontSize: '12px',
+      overflow: 'auto',
+      zIndex: 9999,
+      display: 'flex',
+      flexDirection: 'column',
+      boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+    }}>
+      <div style={{
+        padding: '8px',
+        backgroundColor: '#333',
+        borderBottom: '1px solid #555',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <strong>🐛 Debug Console ({messages.length})</strong>
+        <button 
+          onClick={clearMessages} 
+          style={{ 
+            cursor: 'pointer',
+            padding: '2px 8px',
+            backgroundColor: '#555',
+            border: 'none',
+            borderRadius: '3px',
+            color: 'white'
+          }}
+        >
+          Clear
+        </button>
+      </div>
+      <div style={{ flex: 1, overflow: 'auto', padding: '8px' }}>
+        {messages.map(msg => (
+          <div
+            key={msg.id}
+            style={{
+              padding: '4px',
+              margin: '2px 0',
+              borderLeft: `3px solid`,
+              borderLeftColor: getMessageStyle(msg.type).borderLeftColor,
+              fontSize: '11px',
+              fontFamily: 'monospace'
+            }}
+          >
+            <span style={{ color: '#888' }}>
+              {new Date(msg.timestamp).toLocaleTimeString()}
+            </span>
+            {' '}
+            <span style={{ color: getMessageStyle(msg.type).color }}>
+              [{msg.type.toUpperCase()}]
+            </span>
+            {' '}
+            <span style={{ color: '#ddd' }}>
+              {typeof msg.message === 'object' 
+                ? JSON.stringify(msg.message, null, 2)
+                : msg.message}
+            </span>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+    </div>
+  );
+};
+
+export default DebugComponent;

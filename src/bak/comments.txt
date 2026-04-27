@@ -24,3 +24,13 @@
 20260427-104748-AirQuality-bak.disabled:
 20260427-110609-App-bak.disabled: add config part 1
 20260427-120550-App-bak.disabled:
+20260427-121952-App-bak.disabled: before adding debug
+20260427-133851-App-bak.disabled: before refactor  into weather components
+20260427-133851-App-bak.disabled:
+20260427-133940-Forecast7day-bak.disabled:
+20260427-131934-DebugComponent-bak.disabled:
+20260427-141341-DebugComponent-bak.disabled: before copy button
+20260427-141839-DebugComponent-bak.disabled: not matching colors
+20260427-114012-HourlyForecast-bak.disabled:
+20260427-144040-HourlyForecast-bak.disabled:
+20260427-144521-HourlyForecast-bak.disabled:
