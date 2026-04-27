@@ -31,8 +31,11 @@ function arcD(startDeg, endDeg) {
 }
 
 const GAUGE_MAX = 500
+const ARC_START = 90  // straight up — center of the arc
 
-// Map AQI value to degrees on arc (180° left = 0, 0° right = 500)
+// Map AQI value to degrees on arc
+// Left half (180° to 90°): AQI 0 → 250
+// Right half (90° to 0°): AQI 251 → 500
 function aqiToDeg(aqi) {
   const clamped = Math.max(0, Math.min(aqi, GAUGE_MAX))
   return 180 - (clamped / GAUGE_MAX) * 180
@@ -170,17 +173,26 @@ export default function AirQuality({ lat, lon }) {
           )
         })}
 
+        {/* Elapsed arc (from center to current AQI) */}
+        <path className="aq-elapsed"
+          d={arcD(ARC_START, aqiDeg)}
+          fill="none"
+          stroke={aqiMeta.color}
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+
         {/* Current position marker */}
         <circle className="aq-marker-glow"
-          cx={aqiPt.x} cy={aqiPt.y} r={10}
+          cx={aqiPt.x} cy={aqiPt.y} r={9}
           fill={aqiMeta.color} />
         <circle className="aq-marker-dot"
-          cx={aqiPt.x} cy={aqiPt.y} r={6}
+          cx={aqiPt.x} cy={aqiPt.y} r={5}
           fill={aqiMeta.color} />
 
         {/* AQI value above the dot */}
         <text className="aq-value-text"
-          x={aqiPt.x} y={aqiPt.y - 16}
+          x={aqiPt.x} y={aqiPt.y - 14}
           textAnchor="middle"
           fill={aqiMeta.color}>
           {aqi}
@@ -188,8 +200,10 @@ export default function AirQuality({ lat, lon }) {
 
         {/* Scale labels */}
         <circle className="aq-scale-dot" cx={polar(180).x} cy={CY} r={3} />
+        <circle className="aq-scale-dot" cx={polar(90).x} cy={polar(90).y} r={3} />
         <circle className="aq-scale-dot" cx={polar(0).x} cy={CY} r={3} />
         <text className="aq-scale-label" x={polar(180).x - 2} y={CY + 14} textAnchor="middle">0</text>
+        <text className="aq-scale-label" x={polar(90).x} y={polar(90).y + 24} textAnchor="middle">250</text>
         <text className="aq-scale-label" x={polar(0).x + 2} y={CY + 14} textAnchor="middle">500</text>
 
         {/* Label under arc */}

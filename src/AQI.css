@@ -1,0 +1,160 @@
+/* AQI Table specific styles */
+
+/* AQI Row base styles */
+.aqi-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  margin: 0;
+}
+
+.aqi-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.aqi-item:last-child {
+  border-bottom: none;
+}
+
+.aqi-row .aqi-color-indicator,
+.aqi-row .aqi-color-name,
+.aqi-row .aqi-level,
+.aqi-row .aqi-range {
+  transition: all 0.2s ease;
+}
+
+/* Row content layout */
+.aqi-row {
+  display: flex;
+  gap: 12px;
+}
+
+.aqi-color-indicator {
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.aqi-color-name {
+  width: 70px;
+  flex-shrink: 0;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.aqi-level {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aqi-range {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.aqi-expand-icon {
+  font-size: 16px;
+  opacity: 0.6;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+/* Color dots */
+.color-dot-green { background: #2ecc71; box-shadow: 0 0 4px #2ecc71; }
+.color-dot-yellow { background: #f1c40f; box-shadow: 0 0 4px #f1c40f; }
+.color-dot-orange { background: #e67e22; box-shadow: 0 0 4px #e67e22; }
+.color-dot-red { background: #e74c3c; box-shadow: 0 0 4px #e74c3c; }
+.color-dot-purple { background: #9b59b6; box-shadow: 0 0 4px #9b59b6; }
+.color-dot-maroon { background: #800020; box-shadow: 0 0 4px #800020; }
+
+/* Row background colors (muted) */
+.aqi-row-green { background: transparent; }
+.aqi-row-green.expanded { background: rgba(0, 200, 100, 0.12); }
+
+.aqi-row-yellow { background: transparent; }
+.aqi-row-yellow.expanded { background: rgba(241, 196, 15, 0.12); }
+
+.aqi-row-orange { background: transparent; }
+.aqi-row-orange.expanded { background: rgba(230, 126, 34, 0.12); }
+
+.aqi-row-red { background: transparent; }
+.aqi-row-red.expanded { background: rgba(231, 76, 60, 0.12); }
+
+.aqi-row-purple { background: transparent; }
+.aqi-row-purple.expanded { background: rgba(155, 89, 182, 0.12); }
+
+.aqi-row-maroon { background: transparent; }
+.aqi-row-maroon.expanded { background: rgba(128, 0, 32, 0.2); }
+
+/* Description styles */
+.aqi-description {
+  padding: 12px 8px 16px 20px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  line-height: 1.5;
+  border-radius: 0 0 8px 8px;
+  margin: 0 0 8px 0;
+  padding-left: 20px;
+  border-left-width: 2px;
+  border-left-style: solid;
+}
+
+/* Description colors by AQI level */
+.aqi-description-green {
+  color: #a3e4c8;
+  background: rgba(0, 200, 100, 0.12);
+  border-left-color: #2ecc71;
+}
+
+.aqi-description-yellow {
+  color: #f9e79f;
+  background: rgba(241, 196, 15, 0.12);
+  border-left-color: #f1c40f;
+}
+
+.aqi-description-orange {
+  color: #f5cba7;
+  background: rgba(230, 126, 34, 0.12);
+  border-left-color: #e67e22;
+}
+
+.aqi-description-red {
+  color: #f5b7b1;
+  background: rgba(231, 76, 60, 0.12);
+  border-left-color: #e74c3c;
+}
+
+.aqi-description-purple {
+  color: #d7bde2;
+  background: rgba(155, 89, 182, 0.12);
+  border-left-color: #9b59b6;
+}
+
+.aqi-description-maroon {
+  color: #e6b8b8;
+  background: rgba(128, 0, 32, 0.2);
+  border-left-color: #800020;
+}
+
+/* AQI row text colors on hover */
+.aqi-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.aqi-row-green:hover .aqi-color-name { color: #2ecc71; }
+.aqi-row-yellow:hover .aqi-color-name { color: #f1c40f; }
+.aqi-row-orange:hover .aqi-color-name { color: #e67e22; }
+.aqi-row-red:hover .aqi-color-name { color: #e74c3c; }
+.aqi-row-purple:hover .aqi-color-name { color: #9b59b6; }
+.aqi-row-maroon:hover .aqi-color-name { color: #e6b8b8; }

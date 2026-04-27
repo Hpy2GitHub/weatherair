@@ -4,23 +4,23 @@ import './AirQuality.css'
 // ─── AQI scale ────────────────────────────────────────────────────────────────
 
 const AQI_LEVELS = [
-  { max: 50,   label: 'Good',                      color: '#4ade80' },
-  { max: 100,  label: 'Moderate',                  color: '#facc15' },
-  { max: 150,  label: 'Unhealthy for Sensitive',   color: '#fb923c' },
-  { max: 200,  label: 'Unhealthy',                 color: '#f87171' },
-  { max: 300,  label: 'Very Unhealthy',            color: '#c084fc' },
-  { max: Infinity, label: 'Hazardous',             color: '#9f1239' },
+  { max: 50,       label: 'Good',               color: '#4ade80' },
+  { max: 100,      label: 'Moderate',           color: '#facc15' },
+  { max: 150,      label: 'Unhealthy for Some', color: '#fb923c' },
+  { max: 200,      label: 'Unhealthy',          color: '#f87171' },
+  { max: 300,      label: 'Very Unhealthy',     color: '#c084fc' },
+  { max: Infinity, label: 'Hazardous',          color: '#fb7185' },
 ]
 
 const getAqiMeta = (val) => AQI_LEVELS.find((l) => val <= l.max) ?? AQI_LEVELS.at(-1)
 
-// ─── SVG helpers (matching SkyEvents) ────────────────────────────────────────
+// ─── Gauge helpers ────────────────────────────────────────────────────────────
 
-const CX = 110, CY = 98, R = 80
+const CX = 100, CY = 96, R = 72
 
 function polar(angleDeg) {
   const rad = (angleDeg * Math.PI) / 180
-  return { x: CX + R * Math.cos(rad), y: CY - R * Math.sin(rad) }
+  return { x: CX + R * Math.cos(rad), y: CY + R * Math.sin(rad) }
 }
 
 function arcD(startDeg, endDeg) {
@@ -30,24 +30,20 @@ function arcD(startDeg, endDeg) {
   return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${R} ${R} 0 ${large} 0 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`
 }
 
-const GAUGE_MAX = 500
+const GAUGE_MAX = 300
 
-// Map AQI value to degrees on arc (180° left = 0, 0° right = 500)
-function aqiToDeg(aqi) {
-  const clamped = Math.max(0, Math.min(aqi, GAUGE_MAX))
-  return 180 - (clamped / GAUGE_MAX) * 180
-}
-
-// ─── Zone segments ───────────────────────────────────────────────────────────
-
+// 180° (left) → 0° (right), counterclockwise, mapped to AQI 0–300
 const SEGMENTS = [
-  { from: 0,   to: 50,   color: '#4ade80' },  // Green  – Good
-  { from: 51,  to: 100,  color: '#facc15' },  // Yellow – Moderate
-  { from: 101, to: 150,  color: '#fb923c' },  // Orange – USG
-  { from: 151, to: 200,  color: '#f87171' },  // Red    – Unhealthy
-  { from: 201, to: 300,  color: '#c084fc' },  // Purple – Very Unhealthy
-  { from: 301, to: 500,  color: '#9f1239' },  // Maroon – Hazardous
+  { from: 180, to: 150, color: '#4ade80' },  // 0–50   Good
+  { from: 150, to: 120, color: '#facc15' },  // 51–100 Moderate
+  { from: 120, to:  90, color: '#fb923c' },  // 101–150 USG
+  { from:  90, to:  60, color: '#f87171' },  // 151–200 Unhealthy
+  { from:  60, to:   0, color: '#c084fc' },  // 201–300 Very Unhealthy
 ]
+
+function needleAngle(aqi) {
+  return 180 - (Math.min(aqi, GAUGE_MAX) / GAUGE_MAX) * 180
+}
 
 // ─── Pollutant components ─────────────────────────────────────────────────────
 
@@ -122,9 +118,19 @@ export default function AirQuality({ lat, lon }) {
 
   const primary = components[0] ?? null
 
-  // ── Position dot ──
-  const aqiDeg = aqiToDeg(aqi)
-  const aqiPt  = polar(aqiDeg)
+  // ── Needle geometry ──
+  const angle    = needleAngle(aqi)
+  const tip      = polar(angle)
+  const pivotR   = 5
+  const tipX     = CX + (tip.x - CX) * 0.88
+  const tipY     = CY + (tip.y - CY) * 0.88
+  // Small base triangle at pivot
+  const leftPt   = polar(angle + 90)
+  const rightPt  = polar(angle - 90)
+  const blx      = CX + (leftPt.x  - CX) * (pivotR / R)
+  const bly      = CY + (leftPt.y  - CY) * (pivotR / R)
+  const brx      = CX + (rightPt.x - CX) * (pivotR / R)
+  const bry      = CY + (rightPt.y - CY) * (pivotR / R)
 
   // ── Pollen ──
   const pollens = POLLEN_TYPES
@@ -136,69 +142,42 @@ export default function AirQuality({ lat, lon }) {
     : null
 
   return (
-    <section className="aq-card card fade-in-4">
+    <section className="card aq-card fade-in-4">
 
       {/* ── Gauge ──────────────────────────────────── */}
       <p className="section-label">Air Quality</p>
 
-      <svg viewBox="0 0 220 120" className="aq-gauge"
+      <svg viewBox="0 0 200 112" className="aq-gauge"
         aria-label={`US AQI ${aqi} — ${aqiMeta.label}`}>
 
-        {/* Horizon line & Hemisphere */}
-        <line x1={CX - R - 8} y1={CY} x2={CX + R + 8} y2={CY}
-          stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
-        <path d={arcD(0, 180)} fill="rgba(0,0,0,0.18)" />
-
-        {/* Full Track arc */}
-        <path className="aq-track-bg"
-          d={arcD(180, 0)} fill="none"
-          strokeWidth="12" strokeLinecap="butt" />
+        {/* Track */}
+        <path d={arcD(180, 0)} fill="none"
+          stroke="rgba(255,255,255,0.06)" strokeWidth="14" strokeLinecap="butt" />
 
         {/* Zone segments */}
-        {SEGMENTS.map((s) => {
-          const startDeg = aqiToDeg(s.to)
-          const endDeg   = aqiToDeg(s.from)
-          return (
-            <path key={s.from}
-              className="aq-zone-seg"
-              d={arcD(startDeg, endDeg)}
-              fill="none"
-              stroke={s.color}
-              strokeWidth="12"
-              strokeLinecap="butt"
-            />
-          )
-        })}
+        {SEGMENTS.map((s) => (
+          <path key={s.from} d={arcD(s.from, s.to)} fill="none"
+            stroke={s.color} strokeWidth="14" strokeLinecap="butt" opacity="0.4" />
+        ))}
 
-        {/* Current position marker */}
-        <circle className="aq-marker-glow"
-          cx={aqiPt.x} cy={aqiPt.y} r={10}
-          fill={aqiMeta.color} />
-        <circle className="aq-marker-dot"
-          cx={aqiPt.x} cy={aqiPt.y} r={6}
-          fill={aqiMeta.color} />
+        {/* Needle */}
+        <polygon
+          points={`${tipX.toFixed(1)},${tipY.toFixed(1)} ${blx.toFixed(1)},${bly.toFixed(1)} ${brx.toFixed(1)},${bry.toFixed(1)}`}
+          fill="white" opacity="0.9"
+        />
+        <circle cx={CX} cy={CY} r={pivotR} fill="white" opacity="0.9" />
 
-        {/* AQI value above the dot */}
-        <text className="aq-value-text"
-          x={aqiPt.x} y={aqiPt.y - 16}
-          textAnchor="middle"
-          fill={aqiMeta.color}>
-          {aqi}
-        </text>
+        {/* Value + label */}
+        <text x={CX} y={CY + 24} textAnchor="middle" fontSize="22" fontWeight="400"
+          fill={aqiMeta.color} fontFamily="Cormorant Garamond, serif">{aqi}</text>
+        <text x={CX} y={CY + 35} textAnchor="middle" fontSize="7.5"
+          fill="rgba(255,255,255,0.3)" fontFamily="DM Mono, monospace"
+          letterSpacing="1">{aqiMeta.label.toUpperCase()}</text>
 
         {/* Scale labels */}
-        <circle className="aq-scale-dot" cx={polar(180).x} cy={CY} r={3} />
-        <circle className="aq-scale-dot" cx={polar(0).x} cy={CY} r={3} />
-        <text className="aq-scale-label" x={polar(180).x - 2} y={CY + 14} textAnchor="middle">0</text>
-        <text className="aq-scale-label" x={polar(0).x + 2} y={CY + 14} textAnchor="middle">500</text>
-
-        {/* Label under arc */}
-        <text className="aq-label-text"
-          x={CX} y={CY + 14}
-          textAnchor="middle"
-          fill={aqiMeta.color}>
-          {aqiMeta.label.toUpperCase()}
-        </text>
+        <text x="20"  y="109" fontSize="7.5" fill="rgba(255,255,255,0.22)" fontFamily="DM Mono, monospace">0</text>
+        <text x="86"  y="26"  fontSize="7.5" fill="rgba(255,255,255,0.22)" fontFamily="DM Mono, monospace">150</text>
+        <text x="166" y="109" fontSize="7.5" fill="rgba(255,255,255,0.22)" fontFamily="DM Mono, monospace">300</text>
       </svg>
 
       {/* ── Pollutant bars ─────────────────────────── */}
@@ -231,7 +210,7 @@ export default function AirQuality({ lat, lon }) {
       {/* ── Pollen ─────────────────────────────────── */}
       {pollens.length > 0 && (
         <div className="aq-pollen">
-          <p className="section-label">Pollen</p>
+          <p className="section-label" style={{ marginTop: '16px' }}>Pollen</p>
 
           {worstPollen && worstPollen.level >= 2 && (
             <p className="aq-alert" style={{ color: POLLEN_COLORS[worstPollen.level] }}>

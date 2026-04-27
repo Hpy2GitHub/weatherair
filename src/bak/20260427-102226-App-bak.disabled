@@ -214,10 +214,10 @@ export default function App() {
 
       <AirQuality lat={activeCoords.lat} lon={activeCoords.lon} />
 
-      <AQITable />
-
       {/* ── Sky Events (sunrise/sunset arc, golden hour, moon phase) ── */}
       <SkyEvents lat={activeCoords.lat} lon={activeCoords.lon} />
+
+      <AQITable />
 
       <footer className="app-footer">
         Open-Meteo · No ads · No tracking

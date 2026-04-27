@@ -122,9 +122,9 @@ export default function AirQuality({ lat, lon }) {
 
   const primary = components[0] ?? null
 
-  // ── Position dot ──
-  const aqiDeg = aqiToDeg(aqi)
-  const aqiPt  = polar(aqiDeg)
+  // ── Needle / position dot ──
+  const aqiDeg   = aqiToDeg(aqi)
+  const aqiPt    = polar(aqiDeg)
 
   // ── Pollen ──
   const pollens = POLLEN_TYPES
@@ -136,7 +136,7 @@ export default function AirQuality({ lat, lon }) {
     : null
 
   return (
-    <section className="aq-card card fade-in-4">
+    <section className="card aq-card fade-in-4">
 
       {/* ── Gauge ──────────────────────────────────── */}
       <p className="section-label">Air Quality</p>
@@ -150,53 +150,68 @@ export default function AirQuality({ lat, lon }) {
         <path d={arcD(0, 180)} fill="rgba(0,0,0,0.18)" />
 
         {/* Full Track arc */}
-        <path className="aq-track-bg"
-          d={arcD(180, 0)} fill="none"
-          strokeWidth="12" strokeLinecap="butt" />
+        <path d={arcD(180, 0)} fill="none"
+          stroke="rgba(255,255,255,0.06)" strokeWidth="12" strokeLinecap="butt" />
 
         {/* Zone segments */}
         {SEGMENTS.map((s) => {
-          const startDeg = aqiToDeg(s.to)
-          const endDeg   = aqiToDeg(s.from)
+          const startDeg = aqiToDeg(s.to)    // right end of segment
+          const endDeg   = aqiToDeg(s.from)  // left end of segment
           return (
             <path key={s.from}
-              className="aq-zone-seg"
               d={arcD(startDeg, endDeg)}
               fill="none"
               stroke={s.color}
               strokeWidth="12"
               strokeLinecap="butt"
+              opacity="0.35"
             />
           )
         })}
 
+        {/* Elapsed arc (from 0 to current AQI) */}
+        <path d={arcD(180, aqiDeg)} fill="none"
+          stroke={aqiMeta.color}
+          strokeWidth="3"
+          strokeLinecap="round"
+          opacity="0.85"
+        />
+
         {/* Current position marker */}
-        <circle className="aq-marker-glow"
-          cx={aqiPt.x} cy={aqiPt.y} r={10}
-          fill={aqiMeta.color} />
-        <circle className="aq-marker-dot"
-          cx={aqiPt.x} cy={aqiPt.y} r={6}
+        <circle cx={aqiPt.x} cy={aqiPt.y} r={9}
+          fill={aqiMeta.color} opacity="0.2" />
+        <circle cx={aqiPt.x} cy={aqiPt.y} r={5}
           fill={aqiMeta.color} />
 
         {/* AQI value above the dot */}
-        <text className="aq-value-text"
-          x={aqiPt.x} y={aqiPt.y - 16}
+        <text x={aqiPt.x} y={aqiPt.y - 14}
           textAnchor="middle"
-          fill={aqiMeta.color}>
+          fontSize="13"
+          fontWeight="bold"
+          fill={aqiMeta.color}
+          fontFamily="DM Mono, monospace">
           {aqi}
         </text>
 
         {/* Scale labels */}
-        <circle className="aq-scale-dot" cx={polar(180).x} cy={CY} r={3} />
-        <circle className="aq-scale-dot" cx={polar(0).x} cy={CY} r={3} />
-        <text className="aq-scale-label" x={polar(180).x - 2} y={CY + 14} textAnchor="middle">0</text>
-        <text className="aq-scale-label" x={polar(0).x + 2} y={CY + 14} textAnchor="middle">500</text>
+        <circle cx={polar(180).x} cy={CY} r={3} fill="rgba(255,255,255,0.2)" />
+        <circle cx={polar(0).x} cy={CY} r={3} fill="rgba(255,255,255,0.2)" />
+        <text x={polar(180).x - 2} y={CY + 14}
+          textAnchor="middle" fontSize="8.5"
+          fill="rgba(255,255,255,0.35)"
+          fontFamily="DM Mono, monospace">0</text>
+        <text x={polar(0).x + 2} y={CY + 14}
+          textAnchor="middle" fontSize="8.5"
+          fill="rgba(255,255,255,0.35)"
+          fontFamily="DM Mono, monospace">500</text>
 
         {/* Label under arc */}
-        <text className="aq-label-text"
-          x={CX} y={CY + 14}
-          textAnchor="middle"
-          fill={aqiMeta.color}>
+        <text x={CX} y={CY + 14}
+          textAnchor="middle" fontSize="9"
+          fill={aqiMeta.color}
+          fontWeight="500"
+          fontFamily="DM Mono, monospace"
+          letterSpacing="1">
           {aqiMeta.label.toUpperCase()}
         </text>
       </svg>
@@ -231,7 +246,7 @@ export default function AirQuality({ lat, lon }) {
       {/* ── Pollen ─────────────────────────────────── */}
       {pollens.length > 0 && (
         <div className="aq-pollen">
-          <p className="section-label">Pollen</p>
+          <p className="section-label" style={{ marginTop: '16px' }}>Pollen</p>
 
           {worstPollen && worstPollen.level >= 2 && (
             <p className="aq-alert" style={{ color: POLLEN_COLORS[worstPollen.level] }}>
