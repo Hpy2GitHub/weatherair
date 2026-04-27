@@ -38,19 +38,7 @@ export default function Forecast7Day({ daily, fmt }) {
         
         return (
           <div key={dateStr} className={`day-row${last ? ' last' : ''}`}>
-            <span className={`day-name${i === 0 ? ' today' : ''}`}>
-              {label}
-              {pct > 0 && (
-                <span style={{ 
-                  fontSize: '9px', 
-                  color: 'rgba(96, 165, 250, 0.8)', 
-                  marginLeft: '4px',
-                  fontFamily: "'DM Mono', monospace"
-                }}>
-                  {pct}%
-                </span>
-              )}
-            </span>
+            <span className={`day-name${i === 0 ? ' today' : ''}`}>{label}</span>
             <span className="day-icon">{icon}</span>
             <div className="precip-bar" title={`${pct}% chance of rain`}>
               <div className="precip-fill" style={{ width: `${pct}%` }} />
