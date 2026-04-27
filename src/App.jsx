@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import AirQuality from './AirQuality'
 
 // WMO weather interpretation codes → label + emoji
 const WMO = {
@@ -53,6 +54,7 @@ export default function App() {
   const [phase,    setPhase]    = useState('loading') // loading | error | ready
   const [weather,  setWeather]  = useState(null)
   const [location, setLocation] = useState(null)
+  const [coords,   setCoords]   = useState(null)
   const [error,    setError]    = useState('')
   const [unit,     setUnit]     = useState('f')
 
@@ -65,6 +67,7 @@ export default function App() {
 
     navigator.geolocation.getCurrentPosition(
       async ({ coords: { latitude: lat, longitude: lon } }) => {
+          setCoords({ lat, lon })
         try {
           const [weatherRes, geoRes] = await Promise.all([
             fetch(
@@ -206,6 +209,8 @@ export default function App() {
           )
         })}
       </section>
+
+      <AirQuality lat={coords?.lat} lon={coords?.lon} />
 
       <p className="footer">Open-Meteo · No ads · No tracking</p>
     </div>
