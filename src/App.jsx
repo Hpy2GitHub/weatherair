@@ -16,6 +16,7 @@ import HourlyForecast from './HourlyForecast';
 import SkyEvents from './SkyEvents';
 import AQITable from './AQITable';
 import WeatherRadar from './WeatherRadar';
+import ForecastHighlights from './ForecastHighlights';
 //import HourlyPrecipitation from './HourlyPrecipitation';
 
 import { useWeatherData } from './hooks/useWeatherData';
@@ -136,7 +137,12 @@ export default function App() {
           <AQITable />
         </ConditionalRenderer>
 
-        {/* Weather Radar */}
+        {/* National Weather Service Text - Use its OWN componentId */}
+        <ConditionalRenderer componentId="nwsforecast">
+          <ForecastHighlights lat={activeCoords.lat} lon={activeCoords.lon} />
+        </ConditionalRenderer>
+        
+        {/* Weather Radar - Keep this separate */}
         <ConditionalRenderer componentId="radar">
           <WeatherRadar lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>

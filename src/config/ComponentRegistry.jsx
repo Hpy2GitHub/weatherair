@@ -91,7 +91,15 @@ export const componentRegistry = [
   {
     id: 'radar',
     name: 'Weather Radar',
-    description: 'Government weather map(s?)',
+    description: 'Government Weather Map',
+    defaultVisible: true,
+    category: 'forecast',
+    required: false,
+  },
+  {
+    id: 'nwsforecast',
+    name: 'Forecast Highlights',
+    description: 'National Weather Service Summary',
     defaultVisible: true,
     category: 'forecast',
     required: false,
