@@ -1,0 +1,29 @@
+.hf-section {
+  /* no card wrapper — let it breathe like the old hourly scroll */
+}
+
+.hf-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* small fade hints on left/right edges */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
+}
+
+.hf-scroll::-webkit-scrollbar {
+  display: none;
+}

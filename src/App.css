@@ -154,35 +154,6 @@ body {
   margin-bottom: 12px;
 }
 
-/* ── Hourly scroll ──────────────────────────────────────────────────────── */
-.hourly-scroll {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 6px;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.hourly-scroll::-webkit-scrollbar { display: none; }
-
-.hour-card {
-  flex: 0 0 56px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  padding: 12px 6px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}
-
-.hour-time   { font-size: 10px; color: var(--muted); }
-.hour-icon   { font-size: 18px; line-height: 1; }
-.hour-temp   { font-family: var(--serif); font-size: 16px; font-weight: 400; }
-.hour-precip { font-size: 9px; color: var(--accent); }
-
 /* ── 7-day rows ─────────────────────────────────────────────────────────── */
 .day-row {
   display: flex;
