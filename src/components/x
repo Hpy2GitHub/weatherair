@@ -1,3 +1,0 @@
-  const { isVisible } = useVisibility();
-  const visible = isVisible(componentId);
-  console.log(`Component ${componentId}:`, visible); // Debug line
