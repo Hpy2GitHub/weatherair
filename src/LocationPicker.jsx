@@ -65,6 +65,7 @@ export default function LocationPicker({ currentCoords, currentName, onSelect })
             lon: parseFloat(item.lon),
           }))
         )
+        if (data.length > 0) setDropdown('search')
       } catch {
         setResults([])
       } finally {

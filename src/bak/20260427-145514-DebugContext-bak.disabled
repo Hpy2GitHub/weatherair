@@ -1,21 +1,19 @@
-// DebugContext.jsx
-import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
+// DebugComponet.jsx
+import React, { createContext, useContext, useState, useCallback } from 'react';
 
 const DebugContext = createContext();
 
 export const DebugProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
-  const counterRef = useRef(0); // Add a counter for unique IDs
 
   const postMessage = useCallback((message, type = 'info') => {
-    counterRef.current += 1; // Increment counter
     const newMessage = {
-      id: `${Date.now()}-${counterRef.current}`, // Combine timestamp + counter
+      id: Date.now(),
       timestamp: new Date().toISOString(),
       message,
-      type,
+      type, // 'info', 'warn', 'error', 'debug'
     };
-    setMessages(prev => [newMessage, ...prev].slice(0, 100));
+    setMessages(prev => [newMessage, ...prev].slice(0, 100)); // Keep last 100
   }, []);
 
   const clearMessages = useCallback(() => {
