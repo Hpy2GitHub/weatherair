@@ -175,9 +175,9 @@ export default function App() {
   return (
     <VisibilityProvider>
       <div className="app">
+        <CustomizeButton />
 
         {/* ── Header ─────────────────────────────────── */}
-
         <ConditionalRenderer componentId="header">
           <header className="header fade-in">
             <div>
@@ -186,12 +186,9 @@ export default function App() {
                 {[location.region, location.country].filter(Boolean).join(' · ')}
               </p>
             </div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <div className="unit-toggle">
-                <button className={unit === 'f' ? 'active' : ''} onClick={() => setUnit('f')}>°F</button>
-                <button className={unit === 'c' ? 'active' : ''} onClick={() => setUnit('c')}>°C</button>
-              </div>
-              <CustomizeButton />
+            <div className="unit-toggle">
+              <button className={unit === 'f' ? 'active' : ''} onClick={() => setUnit('f')}>°F</button>
+              <button className={unit === 'c' ? 'active' : ''} onClick={() => setUnit('c')}>°C</button>
             </div>
           </header>
         </ConditionalRenderer>
