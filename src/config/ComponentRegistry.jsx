@@ -104,6 +104,14 @@ export const componentRegistry = [
     category: 'forecast',
     required: false,
   },
+  {
+    id: 'flu',
+    name: 'Flu Trends',
+    description: 'Recent Outpatient Reports',
+    defaultVisible: true,
+    category: 'health',
+    required: false,
+  },
 ];
 
 export const getDefaultVisibility = () => {

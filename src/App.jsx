@@ -5,6 +5,7 @@ import ConditionalRenderer from './components/ConditionalRenderer';
 import CustomizePanel from './components/CustomizePanel';
 import CustomizeButton from './components/CustomizeButton';
 import DebugComponent from './DebugComponent';
+import FluTrend from './FluTrend';
 
 import WeatherHeader from './WeatherHeader';
 import CurrentConditions from './CurrentConditions';
@@ -180,6 +181,10 @@ export default function App() {
         {/* Footer */}
         <ConditionalRenderer componentId="footer">
           <footer className="app-footer">Open-Meteo · No ads · No tracking</footer>
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="flu">
+          <FluTrend region="nj" weeks={10} />
         </ConditionalRenderer>
 
         {/* Debug Console */}
