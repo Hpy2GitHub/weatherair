@@ -1,3 +1,5 @@
+/* v2.0: trying to fix size on android */
+
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Mono:wght@300;400&display=swap');
 
 /* ── Reset ──────────────────────────────────────────────────────────────── */
@@ -29,9 +31,10 @@ body {
 .app {
   min-height: 100svh;
   background: radial-gradient(ellipse at 25% 15%, #0e2040 0%, #080d1a 55%);
-  padding: 28px 20px 64px;
-  max-width: 460px;
-  margin: 0 auto;
+  xxx-padding: 28px 20px 64px; /* original pre v2 */
+  padding: 15px 5px;
+  max-width: 440px; 
+  margin: 0 auto; 
   display: flex;
   flex-direction: column;
   gap: 16px;
