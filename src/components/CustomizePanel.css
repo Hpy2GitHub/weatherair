@@ -1,62 +1,209 @@
-/* Add to CustomizePanel.css */
+/* CustomizePanel.css — restored from deployed build */
 
-/* Make panel responsive */
-.customize-panel {
-  max-width: min(400px, 90vw);
-  max-height: 85vh;
+.customize-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #0009;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-/* Allow component names to wrap */
+.customize-panel {
+  background: #0e1525;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.customize-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.customize-title {
+  font-family: Cormorant Garamond, serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #e8eaf0;
+  margin: 0;
+}
+
+.customize-close {
+  background: none;
+  border: none;
+  color: #fff9;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.customize-close:hover {
+  background: #ffffff1a;
+  color: #e8eaf0;
+}
+
+.customize-content {
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.customize-category {
+  margin-bottom: 24px;
+}
+
+.category-title {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #ffffff40;
+  margin-bottom: 12px;
+}
+
+.component-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+}
+
+.component-item.required {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.component-info {
+  flex: 1;
+  margin-right: 12px;
+}
+
 .component-name {
-  font-size: 12px;
-  word-break: break-word;
+  display: block;
+  font-size: 13px;
+  color: #e8eaf0;
+  margin-bottom: 2px;
+  font-family: DM Mono, monospace;
 }
 
 .component-desc {
-  font-size: 9px;
-  line-height: 1.3;
+  display: block;
+  font-size: 10px;
+  color: #fff6;
 }
 
-/* Reduce padding on small screens */
-@media (max-width: 380px) {
-  .customize-overlay {
-    padding: 12px;
-  }
-  
-  .customize-header {
-    padding: 16px;
-  }
-  
-  .customize-content {
-    padding: 16px;
-  }
-  
-  .customize-footer {
-    padding: 12px 16px;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .visibility-stats {
-    text-align: center;
-  }
-  
-  .reset-btn {
-    width: 100%;
-    text-align: center;
-  }
-}
-
-/* Toggle switch - ensure it doesn't overflow */
-.toggle-switch {
-  width: 40px; /* Slightly smaller */
-  height: 22px;
-  flex-shrink: 0; /* Already present, but good to keep */
-}
-
-/* Required badge - make smaller */
 .required-badge {
-  font-size: 7px;
-  padding: 1px 4px;
-  white-space: nowrap;
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff3;
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: #ffffff0d;
+  border-radius: 4px;
+}
+
+/* ── Toggle switch ──────────────────────────────────────────────────────── */
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff1a;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.toggle-slider:before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+input:checked + .toggle-slider {
+  background: rgba(96, 165, 250, 0.4);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+  background-color: #60a5fa;
+}
+
+input:disabled + .toggle-slider {
+  cursor: not-allowed;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+.customize-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff05;
+}
+
+.visibility-stats {
+  font-size: 10px;
+  color: #fff6;
+}
+
+.reset-btn {
+  background: #ffffff0d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff9;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: DM Mono, monospace;
+}
+
+.reset-btn:hover {
+  background: #ffffff1a;
+  color: #e8eaf0;
+}
+
+.reset-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
