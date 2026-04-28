@@ -37,6 +37,22 @@ body {
   gap: 16px;
 }
 
+@media (max-width: 480px) {
+  .app {
+    max-width: 100%;
+    margin: 0;
+    padding: 15px 5px;
+  }
+
+  .hero {
+    text-align: left;
+  }
+
+  .footer {
+    text-align: left;
+  }
+}
+
 /* ── Header ─────────────────────────────────────────────────────────────── */
 .header {
   display: flex;

@@ -1,6 +1,7 @@
 // src/components/CustomizePanel.jsx
 import React from 'react';
 import { useVisibility } from '../context/VisibilityContext';
+import { useWeatherData } from '../hooks/useWeatherData';
 import './CustomizePanel.css';
 
 const CustomizePanel = () => {
@@ -9,19 +10,28 @@ const CustomizePanel = () => {
     setIsCustomizing,
     componentRegistry,
     visibleComponents,
-    hiddenComponents,
     toggleComponent,
     resetToDefaults
   } = useVisibility();
+  
+  const { fetchWeather, coords, phase } = useWeatherData();
 
   if (!isCustomizing) return null;
 
-  const categorized = componentRegistry.reduce((acc, comp) => {
+  const categorized = componentRegistry.filter(comp => !comp.required).reduce((acc, comp) => {
     const category = comp.category || 'other';
     if (!acc[category]) acc[category] = [];
     acc[category].push(comp);
     return acc;
   }, {});
+
+  const handleRefresh = () => {
+    if (coords && coords.lat && coords.lon) {
+      fetchWeather(coords.lat, coords.lon);
+      // Optional: close panel or show feedback
+      // setIsCustomizing(false);
+    }
+  };
 
   return (
     <div className="customize-overlay">
@@ -68,11 +78,20 @@ const CustomizePanel = () => {
 
         <div className="customize-footer">
           <div className="visibility-stats">
-            {visibleComponents.length} of {componentRegistry.length} components visible
+            {visibleComponents.length} of {componentRegistry.filter(comp => !comp.required).length} components visible
           </div>
-          <button className="reset-btn" onClick={resetToDefaults}>
-            Reset to Defaults
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button 
+              className="reset-btn" 
+              onClick={handleRefresh}
+              disabled={phase === 'loading'}
+            >
+              {phase === 'loading' ? '⟳ Loading...' : '↻ Refresh Data'}
+            </button>
+            <button className="reset-btn" onClick={resetToDefaults}>
+              Reset to Defaults
+            </button>
+          </div>
         </div>
       </div>
     </div>

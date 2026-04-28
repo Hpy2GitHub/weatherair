@@ -19,6 +19,8 @@
   border-radius: 8px;
   margin: 0;
   gap: 8px;
+  width: 100%;  /* Add this */
+  box-sizing: border-box;  /* Add this */
 }
 
 .aqi-color-indicator {

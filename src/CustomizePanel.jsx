@@ -18,7 +18,7 @@ const CustomizePanel = () => {
 
   if (!isCustomizing) return null;
 
-  const categorized = componentRegistry.reduce((acc, comp) => {
+  const categorized = componentRegistry.filter(comp => !comp.required).reduce((acc, comp) => {
     const category = comp.category || 'other';
     if (!acc[category]) acc[category] = [];
     acc[category].push(comp);
@@ -78,7 +78,7 @@ const CustomizePanel = () => {
 
         <div className="customize-footer">
           <div className="visibility-stats">
-            {visibleComponents.length} of {componentRegistry.length} components visible
+            {visibleComponents.length} of {componentRegistry.filter(comp => !comp.required).length} components visible
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button 

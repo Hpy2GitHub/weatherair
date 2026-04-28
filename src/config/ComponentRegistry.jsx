@@ -4,7 +4,7 @@ export const componentRegistry = [
     id: 'header',
     name: 'Location Header',
     description: 'City name and region display',
-    defaultVisible: true,
+    defaultVisible: false,
     category: 'info',
     required: true,
   },
