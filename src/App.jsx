@@ -19,6 +19,11 @@ import AQITable from './AQITable';
 import WeatherRadar from './WeatherRadar';
 import ForecastHighlights from './ForecastHighlights';
 import RefreshButton from './RefreshButton';
+import LightningDebugCard from './LightningDebugCard';
+import ActiveFiresCard from './ActiveFiresCard';
+import FireDriversCard from './FireDriversCard';
+import FireRiskCard from './FireRiskCard';
+import FireMapsTable from './FireMapsTable';
 //import HourlyPrecipitation from './HourlyPrecipitation';
 
 import { useWeatherData } from './hooks/useWeatherData';
@@ -133,6 +138,7 @@ export default function App() {
           onSelect={(loc) => setSelectedLocation(loc)}
         />
 
+
         {/* Current Weather */}
         <ConditionalRenderer componentId="hero">
           <CurrentConditions current={weather?.current} unit={unit} fmt={fmt} />
@@ -178,18 +184,41 @@ export default function App() {
           <WeatherRadar lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
 
-        {/* Footer */}
-        <ConditionalRenderer componentId="footer">
-          <footer className="app-footer">Open-Meteo · No ads · No tracking</footer>
+        {/* Lightning */}
+        <ConditionalRenderer componentId="lightning">
+          <LightningDebugCard lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
-
+   
+        {/* Flu Trends */}
         <ConditionalRenderer componentId="flu">
           <FluTrend region="nj" weeks={10} />
+        </ConditionalRenderer>
+
+        {/* Fire sections */}
+        <ConditionalRenderer componentId="activefires">
+          <ActiveFiresCard lat={activeCoords.lat} lon={activeCoords.lon} />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="firelinks">
+          <FireMapsTable />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="firedrivers">
+          <FireDriversCard lat={activeCoords.lat} lon={activeCoords.lon} />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="firerisk">
+          <FireRiskCard lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
 
         {/* Debug Console */}
         <ConditionalRenderer componentId="debugconsole">
           <DebugComponent />
+        </ConditionalRenderer>
+
+        {/* Footer */}
+        <ConditionalRenderer componentId="footer">
+          <footer className="app-footer">Open-Meteo · No ads · No tracking</footer>
         </ConditionalRenderer>
 
         <CustomizePanel />

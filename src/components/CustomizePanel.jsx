@@ -88,8 +88,8 @@ const CustomizePanel = () => {
             >
               {phase === 'loading' ? '⟳ Loading...' : '↻ Refresh Data'}
             </button>
-            <button className="reset-btn" onClick={resetToDefaults}>
-              Reset to Defaults
+            <button className="close" onClick={resetToDefaults}>
+              Reset
             </button>
           </div>
         </div>

@@ -2,7 +2,6 @@
 import React from 'react';
 import { useVisibility } from '../context/VisibilityContext';
 import { useWeatherData } from '../hooks/useWeatherData';
-import './CustomizePanel.css';
 
 const CustomizePanel = () => {
   const { 
