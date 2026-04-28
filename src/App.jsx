@@ -142,6 +142,11 @@ export default function App() {
           <WeatherStats current={weather?.current} daily={weather?.daily} />
         </ConditionalRenderer>
 
+        {/* National Weather Service Text - Use its OWN componentId */}
+        <ConditionalRenderer componentId="nwsforecast">
+          <ForecastHighlights lat={activeCoords.lat} lon={activeCoords.lon} />
+        </ConditionalRenderer>
+
         {/* Hourly Forecast */}
         <ConditionalRenderer componentId="hourly">
           <HourlyForecast hourly={weather?.hourly} unit={unit} />
@@ -157,19 +162,14 @@ export default function App() {
           <AirQuality lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
 
-        {/* Sky Events */}
-        <ConditionalRenderer componentId="skyevents">
-          <SkyEvents lat={activeCoords.lat} lon={activeCoords.lon} />
-        </ConditionalRenderer>
-
         {/* AQI Table */}
         <ConditionalRenderer componentId="aqitable">
           <AQITable />
         </ConditionalRenderer>
 
-        {/* National Weather Service Text - Use its OWN componentId */}
-        <ConditionalRenderer componentId="nwsforecast">
-          <ForecastHighlights lat={activeCoords.lat} lon={activeCoords.lon} />
+        {/* Sky Events */}
+        <ConditionalRenderer componentId="skyevents">
+          <SkyEvents lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
 
         {/* Weather Radar - Keep this separate */}

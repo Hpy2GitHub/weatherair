@@ -2,6 +2,8 @@
 
 .aqi-item {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  width: 100%;          /* ← add this */
+  box-sizing: border-box; /* ← add this */
 }
 
 .aqi-item:last-child {
@@ -93,6 +95,7 @@
 .aqi-row-maroon.expanded { background: rgba(128, 0, 32, 0.2); }
 
 /* Description styles */
+
 .aqi-description {
   padding: 12px 12px 16px 12px;
   margin-bottom: 8px;
@@ -102,6 +105,8 @@
   margin: 0 0 8px 0;
   border-left-width: 2px;
   border-left-style: solid;
+  width: 100%;          /* ← add this */
+  box-sizing: border-box; /* ← add this */
 }
 
 /* Description colors by AQI level */
