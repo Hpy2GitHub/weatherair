@@ -1,74 +1,97 @@
 import { useState } from 'react';
-import { useWeatherData } from './hooks/useWeatherData';
 import { useDebug } from './DebugContext';
 
-
-const RefreshButton = ({ onRefreshComplete = null }) => {
-  const { fetchWeather, coords, phase } = useWeatherData();
+function RefreshButton({
+  fetchWeather,
+  coords,
+  phase,
+  onRefreshComplete = null,
+}) {
+  const { postMessage } = useDebug();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  const hasCoords = coords?.lat != null && coords?.lon != null;
+  const isBusy = isRefreshing || phase === 'loading';
+
   const handleRefresh = async () => {
-    postMessage("Refresh: handleRefresh ");
-    if (isRefreshing || phase === 'loading') return;
-    if (!coords || !coords.lat || !coords.lon) return;
+    postMessage('Refresh: handleRefresh', 'debug');
+
+    if (isBusy) {
+      postMessage('Refresh skipped: already busy', 'debug');
+      return;
+    }
+
+    if (!hasCoords) {
+      postMessage('Refresh skipped: missing coordinates', 'warn');
+      return;
+    }
 
     setIsRefreshing(true);
-    
+    postMessage(
+      `Refresh started for ${coords.lat}, ${coords.lon}`,
+      'debug'
+    );
+
     try {
       await fetchWeather(coords.lat, coords.lon);
-      if (onRefreshComplete) onRefreshComplete();
-      setTimeout(() => setIsRefreshing(false), 500);
+      postMessage('Refresh succeeded', 'info');
+      onRefreshComplete?.();
     } catch (error) {
       console.error('Refresh failed:', error);
-      setIsRefreshing(false);
+      postMessage(
+        `Refresh failed: ${error?.message ?? 'Unknown error'}`,
+        'error'
+      );
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 500);
     }
   };
 
-  const isBusy = isRefreshing || phase === 'loading';
+  if (!document.querySelector('#refresh-spin-style')) {
+    const style = document.createElement('style');
+    style.id = 'refresh-spin-style';
+    style.textContent = `
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   return (
     <button
       onClick={handleRefresh}
-      disabled={isBusy || !coords}
+      disabled={isBusy || !hasCoords}
+      title="Refresh weather data"
+      aria-label="Refresh weather data"
       style={{
-        width: '28px',
-        height: '28px',
+        width: 28,
+        height: 28,
         borderRadius: '50%',
         background: 'var(--surface)',
         border: '1px solid var(--border)',
         color: 'rgba(255, 255, 255, 0.6)',
-        cursor: (!coords || isBusy) ? 'not-allowed' : 'pointer',
+        cursor: !hasCoords || isBusy ? 'not-allowed' : 'pointer',
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: '14px',
+        fontSize: 14,
         transition: 'all 0.2s ease',
-        opacity: (!coords || isBusy) ? 0.5 : 1,
+        opacity: !hasCoords || isBusy ? 0.5 : 1,
         padding: 0,
       }}
-      title="Refresh weather data"
     >
-      <span style={{ 
-        display: 'inline-block',
-        animation: isBusy ? 'spin 1s linear infinite' : 'none'
-      }}>
+      <span
+        style={{
+          display: 'inline-block',
+          animation: isBusy ? 'spin 1s linear infinite' : 'none',
+        }}
+      >
         ↻
       </span>
     </button>
   );
-};
-
-// Add spin animation to document if not already present
-if (!document.querySelector('#refresh-spin-style')) {
-  const style = document.createElement('style');
-  style.id = 'refresh-spin-style';
-  style.textContent = `
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-  `;
-  document.head.appendChild(style);
 }
 
 export default RefreshButton;

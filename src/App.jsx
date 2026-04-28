@@ -120,7 +120,7 @@ export default function App() {
         <div className="header-wrapper" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <WeatherHeader location={location} unit={unit} setUnit={setUnit} />
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <RefreshButton />
+            <RefreshButton fetchWeather={fetchWeather} coords={activeCoords} phase={phase} />
             <CustomizeButton />
           </div>
         </div>
