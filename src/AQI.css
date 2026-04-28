@@ -43,11 +43,11 @@
 }
 
 .aqi-level {
+  flex: 1;
   color: rgba(255, 255, 255, 0.7);
   font-size: 11px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: pre-line; /* This allows \n to create line breaks */
+  line-height: 1.3;
 }
 
 .aqi-range {

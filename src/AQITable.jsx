@@ -23,7 +23,7 @@ const aqiLevels = [
   {
     color: 'orange',
     displayColor: 'Orange',
-    level: 'Unhealthy for Sensitive Groups',
+    level: 'Unhealthy for\nSensitive Groups',
     range: '101 to 150',
     description: 'Members of sensitive groups may experience health effects. The general public is less likely to be affected.',
     bgClass: 'aqi-orange'
