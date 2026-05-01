@@ -19,7 +19,7 @@ import AQITable from './AQITable';
 import WeatherRadar from './WeatherRadar';
 import ForecastHighlights from './ForecastHighlights';
 import RefreshButton from './RefreshButton';
-import LightningDebugCard from './LightningDebugCard';
+//import LightningDebugCard from './LightningDebugCard';
 import ActiveFiresCard from './ActiveFiresCard';
 import FireDriversCard from './FireDriversCard';
 import FireRiskCard from './FireRiskCard';
@@ -184,10 +184,11 @@ export default function App() {
           <WeatherRadar lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
 
-        {/* Lightning */}
+        {/* Lightning 
         <ConditionalRenderer componentId="lightning">
           <LightningDebugCard lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
+        */}
    
         {/* Flu Trends */}
         <ConditionalRenderer componentId="flu">

@@ -104,14 +104,14 @@ export const componentRegistry = [
     category: 'forecast',
     required: false,
   },
-  {
-    id: 'lightning',
-    name: 'Lightning Debug Card',
-    description: 'Fake Lightning Reports',
-    defaultVisible: true,
-    category: 'weather',
-    required: false,
-  },
+//  {
+//    id: 'lightning',
+//    name: 'Lightning Debug Card',
+//    description: 'Fake Lightning Reports',
+//    defaultVisible: true,
+//    category: 'weather',
+//    required: false,
+//  },
   {
     id: 'flu',
     name: 'Flu Trends',
