@@ -27,6 +27,7 @@ const MoonPhaseIcon = ({ phase, size = 36 }) => {
   ];
 
   //console.log(`phase=${phase.toFixed(4)} → index=${index} → ${moonImages[index]}`);
+  console.log(`MoonPhase Tile url=${moonImages[index]}`);
 
   return (
     <img
