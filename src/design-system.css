@@ -1954,3 +1954,194 @@ input:disabled + .toggle-slider {
   max-width: 100px;
   min-width: 100px;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   DAY LENGTH TRACKER  
+───────────────────────────────────────────────────────────────────────── */
+
+.daylength-card {
+  /* inherits .card styles */
+}
+
+.year-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-4);
+}
+
+.year-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.year-nav__btn {
+  padding: 4px 10px;
+  min-width: 36px;
+}
+
+.year-nav__current {
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--r-sm);
+  font-family: var(--mono);
+  font-size: var(--text-sm);
+  color: var(--text);
+  min-width: 70px;
+  text-align: center;
+}
+
+.daylength-range-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  font-size: var(--text-2xs);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.daylength-chart-container {
+  overflow-x: auto;
+  margin: var(--sp-3) 0;
+}
+
+.daylength-chart {
+  display: block;
+  margin: 0 auto;
+}
+
+.daylength-grid-line {
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 1;
+}
+
+.daylength-grid-label {
+  font-size: 9px;
+  fill: rgba(255, 255, 255, 0.35);
+  font-family: var(--mono);
+  text-anchor: end;
+}
+
+.daylength-month-label {
+  font-size: 9px;
+  fill: rgba(255, 255, 255, 0.3);
+  font-family: var(--mono);
+  text-anchor: middle;
+}
+
+.daylength-marker-line {
+  stroke-width: 1;
+  stroke-dasharray: 3,3;
+  opacity: 0.25;
+}
+
+.daylength-marker-label {
+  font-size: 8px;
+  text-anchor: middle;
+  opacity: 0.6;
+  font-family: var(--mono);
+}
+
+.daylength-curve {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0.7;
+}
+
+.daylength-area {
+  fill: rgba(96, 165, 250, 0.05);
+}
+
+.daylength-today-line {
+  stroke: #fbbf24;
+  stroke-width: 1.5;
+  stroke-dasharray: 4,4;
+  opacity: 0.6;
+}
+
+.daylength-today-label {
+  font-size: 8px;
+  fill: #fbbf24;
+  text-anchor: middle;
+  font-family: var(--mono);
+  opacity: 0.7;
+}
+
+/* Stats grid */
+.daylength-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.daylength-stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--r-md);
+  padding: var(--sp-3);
+}
+
+.daylength-stat-card--today {
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.15);
+}
+
+.daylength-stat-label {
+  font-size: var(--text-2xs);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.daylength-stat-label--today {
+  color: #fbbf24;
+}
+
+.daylength-stat-value {
+  font-size: var(--text-md);
+  font-weight: 500;
+}
+
+.daylength-stat-value--longest {
+  color: #f59e0b;
+}
+
+.daylength-stat-value--shortest {
+  color: #3b82f6;
+}
+
+.daylength-stat-value--today {
+  color: #fbbf24;
+}
+
+.daylength-stat-date {
+  font-size: 9px;
+  opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 560px) {
+  .daylength-stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--sp-2);
+  }
+  
+  .year-selector {
+    flex-direction: column;
+    gap: var(--sp-2);
+    align-items: stretch;
+  }
+  
+  .year-nav {
+    justify-content: center;
+  }
+  
+  .daylength-range-badge {
+    align-self: center;
+  }
+}

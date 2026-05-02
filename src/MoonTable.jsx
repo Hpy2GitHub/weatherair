@@ -75,7 +75,7 @@ const MoonTable = ({ lat, lon }) => {
   const d = todays_date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const my_moonIllumination = SunCalc.getMoonIllumination(todays_date);
   const myphase = getMoonPhaseName(my_moonIllumination.phase);
-  console.log(`MoonTable ${d} phase=${myphase}`);
+  //console.log(`MoonTable ${d} phase=${myphase}`);
 
 
   if (loading) return <div className="screen-center"><div className="spinner" style={{fontSize:'48px'}}>🌙</div><div className="loader-text">Calculating...</div></div>;

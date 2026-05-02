@@ -26,6 +26,7 @@ import FireMapsTable from './FireMapsTable';
 import WindCard from './WindCard';
 import HourlyPrecipitation from './HourlyPrecipitation';
 import MoonTable from './MoonTable';
+import DayLengthTracker from './DayLengthTracker';
 
 import { useWeatherData } from './hooks/useWeatherData';
 
@@ -186,6 +187,10 @@ export default function App() {
         {/* Sun and Moon Graphical Arcs */}
         <ConditionalRenderer componentId="skyevents">
           <SkyEvents lat={activeCoords.lat} lon={activeCoords.lon} />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="daylength">
+          <DayLengthTracker lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
 
         {/* Moon Table */}

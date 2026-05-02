@@ -73,6 +73,14 @@ export const componentRegistry = [
     required: false,
   },
   {
+    id: 'daylength',
+    name: 'Day Length Graph',
+    description: 'Daylight in relation to the equinoxes',
+    defaultVisible: true,
+    category: 'astronomy',
+    required: false,
+  },
+  {
     id: 'moontable',
     name: 'Detailed Moon Events',
     description: 'Upcoming moon events',
@@ -128,14 +136,6 @@ export const componentRegistry = [
     category: 'forecast',
     required: false,
   },
-//  {
-//    id: 'lightning',
-//    name: 'Lightning Debug Card',
-//    description: 'Fake Lightning Reports',
-//    defaultVisible: true,
-//    category: 'weather',
-//    required: false,
-//  },
   {
     id: 'flu',
     name: 'Flu Trends',
@@ -183,5 +183,6 @@ export const getDefaultVisibility = () => {
   componentRegistry.forEach(comp => {
     visibility[comp.id] = comp.defaultVisible;
   });
+  //console.log('getDefaultVisibility result:', visibility);
   return visibility;
 };

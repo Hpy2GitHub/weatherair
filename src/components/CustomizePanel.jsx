@@ -26,13 +26,7 @@ const CustomizePanel = () => {
     return acc;
   }, {});
 
-  const handleRefresh = () => {
-    if (coords && coords.lat && coords.lon) {
-      fetchWeather(coords.lat, coords.lon);
-      // Optional: close panel or show feedback
-      // setIsCustomizing(false);
-    }
-  };
+  console.log('Categorized components:', categorized);
 
   return (
     <div className="customize-overlay">
