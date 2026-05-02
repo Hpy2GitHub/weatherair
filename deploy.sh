@@ -18,7 +18,7 @@ BACKUP_DIR="$BACKUP_BASE/$TIMESTAMP"
 # ── npm mode ──────────────────────────────────────────────────────────────────
 if [ "$1" = "npm" ]; then
   echo "🔧 Starting local dev server..."
-    npm run dev -- --mode npm  
+  npm run dev -- --mode npm
   exit 0
 fi
 
@@ -38,7 +38,7 @@ if [ "$1" = "github" ]; then
     git commit -m "$COMMIT_MSG"
     git push origin main
     echo "✅ Pushed to GitHub! Actions will handle the deployment."
-    echo "Navigate to https://hpy2github.github.io/merged-exercise"
+    echo "Navigate to https://hpy2github.github.io/weatherair/"  # ← fixed repo name
   else
     echo "⚠️  No changes detected, nothing to commit."
   fi
@@ -72,41 +72,17 @@ if [ "$1" = "apache" ]; then
   echo "3. Copying dist → $TARGET_DIR..."
   cp -r "$BUILD_DIR"/* "$TARGET_DIR"/
 
-  echo ""
-  echo "4. Syncing favicon..."
-  cp -u public/favicon.ico "$TARGET_DIR/favicon.ico"
-
-  echo "5. Syncing trace* files..."
-  if ls trace* 1>/dev/null 2>&1; then
-      cp trace* "$TARGET_DIR/"
-      echo "   copied: $(ls trace*)"
-  fi
-
-  echo "6. Syncing images..."
+  echo "4. Syncing images..."
   mkdir -p "$TARGET_DIR/images"
-  cp -ur ./public/images/. "$TARGET_DIR/images/"
-
-  echo "7. Syncing videos from public/..."
-  mkdir -p "$TARGET_DIR/videos"
-  cp -ur ./public/videos/. "$TARGET_DIR/videos/" 2>/dev/null || true
-
-  echo "8. Syncing videos from VIDEO_SRC..."
-  for src in "$VIDEO_SRC"/*; do
-      fname=$(basename "$src")
-      dst="$TARGET_DIR/videos/$fname"
-      if [ ! -f "$dst" ]; then
-          cp "$src" "$dst"
-          echo "   copied: $fname"
-      fi
-  done
+  cp -rf ./public/. "$TARGET_DIR/."  # ← removed -u, changed glob to /. to include dotfiles
 
   echo ""
-  echo "9. Setting permissions..."
+  echo "5. Setting permissions..."
   chmod -R 755 "$TARGET_DIR"
 
   echo ""
   echo "🎉 Deployment complete!"
-  echo "   Live at : http://localhost/sandbox/exercise2"
+  echo "   Live at : http://localhost/sandbox/weather-air/"
   echo "   Backup  : $BACKUP_DIR"
   exit 0
 fi
