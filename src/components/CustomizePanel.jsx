@@ -2,7 +2,8 @@
 import React from 'react';
 import { useVisibility } from '../context/VisibilityContext';
 import { useWeatherData } from '../hooks/useWeatherData';
-import './CustomizePanel.css';
+//import './CustomizePanel.css';
+import '../design-system.css';
 
 const CustomizePanel = () => {
   const { 

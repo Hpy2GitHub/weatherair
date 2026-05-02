@@ -122,7 +122,7 @@ export default function App() {
     <VisibilityProvider>
       <div className="app" ref={appTopRef}>
         {/* Header with customize button and refresh button */}
-        <div className="header-wrapper" className="header-wrapper">
+        <div className="header-wrapper">
           <WeatherHeader location={location} unit={unit} setUnit={setUnit} />
           <div className="header-actions">
             <RefreshButton fetchWeather={fetchWeather} coords={activeCoords} phase={phase} />

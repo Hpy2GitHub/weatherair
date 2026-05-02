@@ -1,6 +1,7 @@
 import React from 'react';
 import { useVisibility } from '../context/VisibilityContext';
-import './CustomizeButton.css';
+//import './CustomizeButton.css';
+import '../design-system.css';
 
 const CustomizeButton = () => {
   const { setIsCustomizing } = useVisibility();
