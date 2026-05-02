@@ -19,12 +19,12 @@ import AQITable from './AQITable';
 import WeatherRadar from './WeatherRadar';
 import ForecastHighlights from './ForecastHighlights';
 import RefreshButton from './RefreshButton';
-//import LightningDebugCard from './LightningDebugCard';
 import ActiveFiresCard from './ActiveFiresCard';
 import FireDriversCard from './FireDriversCard';
 import FireRiskCard from './FireRiskCard';
 import FireMapsTable from './FireMapsTable';
-//import HourlyPrecipitation from './HourlyPrecipitation';
+import WindCard from './WindCard';
+import HourlyPrecipitation from './HourlyPrecipitation';
 
 import { useWeatherData } from './hooks/useWeatherData';
 
@@ -148,6 +148,11 @@ export default function App() {
           <WeatherStats current={weather?.current} daily={weather?.daily} />
         </ConditionalRenderer>
 
+        {/* Wind */}
+        <ConditionalRenderer componentId="wind">
+          <WindCard current={weather?.current} hourly={weather?.hourly} unit={unit} />
+        </ConditionalRenderer>
+
         {/* National Weather Service Text - Use its OWN componentId */}
         <ConditionalRenderer componentId="nwsforecast">
           <ForecastHighlights lat={activeCoords.lat} lon={activeCoords.lon} />
@@ -156,6 +161,10 @@ export default function App() {
         {/* Hourly Forecast */}
         <ConditionalRenderer componentId="hourly">
           <HourlyForecast hourly={weather?.hourly} unit={unit} />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="hourlyprecip">
+          <HourlyPrecipitation hourly={weather?.hourly} unit={unit} />
         </ConditionalRenderer>
 
         {/* 7-Day Forecast */}

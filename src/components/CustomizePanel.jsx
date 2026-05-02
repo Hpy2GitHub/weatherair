@@ -82,15 +82,8 @@ const CustomizePanel = () => {
             {visibleComponents.length} of {componentRegistry.filter(comp => !comp.required).length} components visible
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button 
-              className="reset-btn" 
-              onClick={handleRefresh}
-              disabled={phase === 'loading'}
-            >
-              {phase === 'loading' ? '⟳ Loading...' : '↻ Refresh Data'}
-            </button>
-            <button className="close" onClick={resetToDefaults}>
-              Reset
+            <button className="reset-btn" onClick={resetToDefaults}>
+              Reset to Defaults
             </button>
           </div>
         </div>

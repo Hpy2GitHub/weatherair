@@ -46,6 +46,10 @@ const ForecastHighlights = ({ lat, lon }) => {
       const todayPeriod = periods[0];
       const tonightPeriod = periods[1];
       const tomorrowPeriod = periods[2];
+ 
+      console.log(`todayPeriod = ${todayPeriod}`);
+      console.log(`tonightPeriod = ${tonightPeriod}`);
+      console.log(`tomorrowPeriod = ${tomorrowPeriod}`);
       
       let summaryText = '';
       
@@ -55,6 +59,8 @@ const ForecastHighlights = ({ lat, lon }) => {
       } else if (tomorrowPeriod && tomorrowPeriod.detailedForecast) {
         summaryText = tomorrowPeriod.detailedForecast;
       }
+      console.log(`todayPeriod.detailedForecast = ${todayPeriod.detailedForecast}`);
+      console.log(`tomorrowPeriod.detailedForecast = ${tomorrowPeriod.detailedForecast}`);
       
       // Shorten if needed (first 250 chars)
       if (summaryText.length > 280) {

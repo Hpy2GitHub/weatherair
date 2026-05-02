@@ -25,6 +25,22 @@ export const componentRegistry = [
     required: false,
   },
   {
+    id: 'hourlyprecip',
+    name: 'Hourly Precipitation',
+    description: 'How much rain and when',
+    defaultVisible: true,
+    category: 'weather',
+    required: false,
+  },
+  {
+    id: 'wind',
+    name: 'Wind Graphic',
+    description: 'Wind conditions visualized',
+    defaultVisible: true,
+    category: 'weather',
+    required: false,
+  },
+  {
     id: 'hourly',
     name: 'Hourly Forecast',
     description: '24-hour temperature and precipitation chart',

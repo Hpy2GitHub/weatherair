@@ -1,3 +1,0 @@
-import { useDebug } from '../DebugContext';
-      postMessage(`Weather: Fetch already in progress, skipping`, 'debug');
-

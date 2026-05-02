@@ -29,7 +29,7 @@ export const useWeatherData = () => {
           'precipitation,weather_code,wind_speed_10m,wind_direction_10m,is_day,' +
           'surface_pressure,uv_index,visibility,' +
           'dew_point_2m' +
-          '&hourly=temperature_2m,weather_code,precipitation_probability,' +
+          '&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,' +
           'surface_pressure,relative_humidity_2m,dew_point_2m,visibility' +
           '&daily=weather_code,temperature_2m_max,temperature_2m_min,' +
           'precipitation_probability_max,sunrise,sunset,' +

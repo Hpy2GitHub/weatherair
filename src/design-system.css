@@ -1774,3 +1774,148 @@ input:disabled + .toggle-slider {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+   WIND CARD  (WindCard component)
+   Add this block to design-system.css, after the existing card styles.
+───────────────────────────────────────────────────────────────────────── */
+
+/* ── Windmill blade spin (keyframe) ──────────────────────────────────── */
+@keyframes wmill-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Card shell ───────────────────────────────────────────────────────── */
+.wind-card {
+  /* inherits .card padding/border/radius from your design system */
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* ── Header row (label + optional windmills) ─────────────────────────── */
+.wind-card__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+/* ── Windmill cluster ────────────────────────────────────────────────── */
+.wind-mills {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin-bottom: -4px;   /* let turbines "sit on" the header baseline */
+  /* Fade in when wind picks up */
+  animation: fadeUp 0.5s ease forwards;
+}
+
+/* ── Body layout (compass left, data right) ───────────────────────────── */
+.wind-body {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+}
+
+/* ── Data column ──────────────────────────────────────────────────────── */
+.wind-data {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* ── Primary reading ─────────────────────────────────────────────────── */
+.wind-primary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+
+.wind-primary__dir {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+
+.wind-primary__speed {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+
+/* ── Secondary stats ─────────────────────────────────────────────────── */
+.wind-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.wind-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wind-stat__key {
+  font-size: var(--text-xs);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  min-width: 52px;
+}
+
+.wind-stat__val {
+  font-size: var(--text-md);
+  color: var(--text);
+}
+
+/* ── Calm → Gale scale bar ───────────────────────────────────────────── */
+.wind-scale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.wind-scale__bar {
+  position: relative;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(
+    to right,
+    #22c55e,       /* calm — green */
+    #84cc16,
+    #eab308,       /* moderate — yellow */
+    #f97316,       /* fresh — orange */
+    #ef4444        /* gale — red */
+  );
+  overflow: visible;
+}
+
+.wind-scale__marker {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background: white;
+  border: 1.5px solid rgba(0, 0, 0, 0.35);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+  transition: left 0.4s ease;
+  /* triangle alternative: use clip-path if you prefer the arrow look */
+}
+
+.wind-scale__labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-2xs);
+  letter-spacing: 0.8px;
+  color: var(--dim);
+}
