@@ -73,6 +73,14 @@ export const componentRegistry = [
     required: false,
   },
   {
+    id: 'moontable',
+    name: 'Detailed Moon Events',
+    description: 'Upcoming moon events',
+    defaultVisible: true,
+    category: 'astronomy',
+    required: false,
+  },
+  {
     id: 'aqitable',
     name: 'AQI Reference Table',
     description: 'Air Quality Index color codes and descriptions',

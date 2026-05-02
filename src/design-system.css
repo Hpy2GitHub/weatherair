@@ -90,6 +90,7 @@
   --r-pill: 999px;
 
   /* ── Type scale (px — consistent with existing codebase) ──────────────── */
+  --text-3xs: 7px;
   --text-2xs: 9px;
   --text-xs:  11px;
   --text-sm:  12px;
@@ -1918,4 +1919,38 @@ input:disabled + .toggle-slider {
   font-size: var(--text-2xs);
   letter-spacing: 0.8px;
   color: var(--dim);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   MOON TABLE / SUN & MOON SCREEN
+───────────────────────────────────────────────────────────────────────── */
+.moon-screen .section-label {
+  margin-bottom: var(--sp-3);
+}
+
+.moon-screen .stat-label {
+  font-size: var(--text-2xs);
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.moon-screen .stat-value {
+  font-size: var(--text-2xs);
+  font-family: var(--mono);
+}
+
+/* Make moon phase preview pop a bit more */
+.moon-screen .card > div:last-child {
+  margin-top: var(--sp-2);
+}
+
+.moon-plus-label {
+  display: flex; 
+  align-items: left; 
+  gap: 12px; 
+  min-width: 140px; 
+  justify-content: flex-end;
+  overflow-wrap: break-word;
+  max-width: 100px;
+  min-width: 100px;
 }

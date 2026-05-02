@@ -25,6 +25,7 @@ import FireRiskCard from './FireRiskCard';
 import FireMapsTable from './FireMapsTable';
 import WindCard from './WindCard';
 import HourlyPrecipitation from './HourlyPrecipitation';
+import MoonTable from './MoonTable';
 
 import { useWeatherData } from './hooks/useWeatherData';
 
@@ -182,9 +183,14 @@ export default function App() {
           <AQITable />
         </ConditionalRenderer>
 
-        {/* Sky Events */}
+        {/* Sun and Moon Graphical Arcs */}
         <ConditionalRenderer componentId="skyevents">
           <SkyEvents lat={activeCoords.lat} lon={activeCoords.lon} />
+        </ConditionalRenderer>
+
+        {/* Moon Table */}
+        <ConditionalRenderer componentId="moontable">
+          <MoonTable lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
 
         {/* Weather Radar - Keep this separate */}
@@ -252,3 +258,5 @@ function ErrorView({ message }) {
     </div>
   );
 }
+
+// for testing: https://api.open-meteo.com/v1/forecast?latitude=40.350453732678375&longitude=-74.06037447280946&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m,is_day,surface_pressure,uv_index,visibility,dew_point_2m&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,surface_pressure,relative_humidity_2m,dew_point_2m,visibility&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max,relative_humidity_2m_max,relative_humidity_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=7
