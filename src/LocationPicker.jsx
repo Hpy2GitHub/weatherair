@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import './RefreshButton'
-import './LocationPicker.css'
 
 const PRESETS = [
   { city: 'Boston',          region: 'MA', lat: 42.3601,  lon: -71.0589  },

@@ -1,6 +1,5 @@
 // WeatherRadar.jsx
 import { useEffect, useRef, useState, useCallback } from 'react';
-import './WeatherRadar.css';
 
 // Radar layer definitions
 const LAYERS = [

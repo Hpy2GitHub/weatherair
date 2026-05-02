@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import './App.css';
-import './AQI.css';
 
 // AQI data based on the provided image
 const aqiLevels = [

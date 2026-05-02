@@ -1,4 +1,3 @@
-import './HourlyForecast.css'
 
 const WMO_ICON = {
   0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',

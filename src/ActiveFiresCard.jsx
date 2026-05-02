@@ -14,7 +14,6 @@
  */
 
 import { useState, useEffect } from 'react';
-import './fire-components.css';
 
 // ── Constants ────────────────────────────────────────────────────────────────
 

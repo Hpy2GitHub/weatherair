@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import SunCalc from 'suncalc'
-import './SkyEvents.css'
 
 // ─── Moon phase ───────────────────────────────────────────────────────────────
 

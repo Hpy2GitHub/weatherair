@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import './FluTrend.css';
 
 const getRecentEpiweeks = (count = 8) => {
   const now = new Date();

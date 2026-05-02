@@ -27,7 +27,6 @@ import FireMapsTable from './FireMapsTable';
 //import HourlyPrecipitation from './HourlyPrecipitation';
 
 import { useWeatherData } from './hooks/useWeatherData';
-import './App.css';
 
 const toC = (f) => Math.round((f - 32) * 5 / 9);
 const fmtTemp = (f, unit) => unit === 'f' ? `${Math.round(f)}°` : `${toC(f)}°`;
@@ -123,9 +122,9 @@ export default function App() {
     <VisibilityProvider>
       <div className="app" ref={appTopRef}>
         {/* Header with customize button and refresh button */}
-        <div className="header-wrapper" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div className="header-wrapper" className="header-wrapper">
           <WeatherHeader location={location} unit={unit} setUnit={setUnit} />
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div className="header-actions">
             <RefreshButton fetchWeather={fetchWeather} coords={activeCoords} phase={phase} />
             <CustomizeButton />
           </div>
@@ -196,20 +195,20 @@ export default function App() {
         </ConditionalRenderer>
 
         {/* Fire sections */}
+        <ConditionalRenderer componentId="firerisk">
+          <FireRiskCard current={weather?.current} daily={weather?.daily} />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="firedrivers">
+          <FireDriversCard current={weather?.current} daily={weather?.daily} />
+        </ConditionalRenderer>
+
         <ConditionalRenderer componentId="activefires">
           <ActiveFiresCard lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
 
         <ConditionalRenderer componentId="firelinks">
           <FireMapsTable />
-        </ConditionalRenderer>
-
-        <ConditionalRenderer componentId="firedrivers">
-          <FireDriversCard lat={activeCoords.lat} lon={activeCoords.lon} />
-        </ConditionalRenderer>
-
-        <ConditionalRenderer componentId="firerisk">
-          <FireRiskCard lat={activeCoords.lat} lon={activeCoords.lon} />
         </ConditionalRenderer>
 
         {/* Debug Console */}
