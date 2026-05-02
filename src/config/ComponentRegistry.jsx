@@ -10,7 +10,7 @@ export const componentRegistry = [
   },
   {
     id: 'hero',
-    name: 'Current Weather',
+    name: 'Current Weather Snapshot',
     description: 'Main temperature and conditions display',
     defaultVisible: true,
     category: 'weather',
@@ -18,16 +18,8 @@ export const componentRegistry = [
   },
   {
     id: 'stats',
-    name: 'Weather Statistics',
+    name: 'Current Weather Conditions',
     description: 'Wind, humidity, pressure, and other stats',
-    defaultVisible: true,
-    category: 'weather',
-    required: false,
-  },
-  {
-    id: 'hourlyprecip',
-    name: 'Hourly Precipitation',
-    description: 'How much rain and when',
     defaultVisible: true,
     category: 'weather',
     required: false,
@@ -49,6 +41,14 @@ export const componentRegistry = [
     required: false,
   },
   {
+    id: 'hourlyprecip',
+    name: 'Hourly Precipitation (Bars)',
+    description: 'How much rain and when',
+    defaultVisible: true,
+    category: 'forecast',
+    required: false,
+  },
+  {
     id: 'forecast',
     name: '7-Day Forecast',
     description: 'Weekly weather outlook',
@@ -61,7 +61,7 @@ export const componentRegistry = [
     name: 'Air Quality Index',
     description: 'Current AQI gauge and pollutant details',
     defaultVisible: true,
-    category: 'environment',
+    category: 'weather',
     required: false,
   },
   {
@@ -76,15 +76,15 @@ export const componentRegistry = [
     id: 'aqitable',
     name: 'AQI Reference Table',
     description: 'Air Quality Index color codes and descriptions',
-    defaultVisible: true,
-    category: 'environment',
+    defaultVisible: false,
+    category: 'info',
     required: false,
   },
   {
-    id: 'debugconsole',  // ADD THIS
+    id: 'debugconsole',  
     name: 'Debug Console',
     description: 'Developer console for logging API data',
-    defaultVisible: false,  // Off by default, users can enable
+    defaultVisible: false,  
     category: 'info',
     required: false,
   },
@@ -98,7 +98,7 @@ export const componentRegistry = [
   },
   {
     id: 'precipitation',
-    name: 'Precipitation Forecast',
+    name: 'Precipitation Forecast (Line)',
     description: '24-hour precipitation probability and type chart',
     defaultVisible: true,
     category: 'forecast',

@@ -115,14 +115,24 @@ export default function WeatherStats({ current, daily, aqiData }) {
         label="Visibility"
         value={vis != null ? `${vis} mi` : '—'}
       />
+      {precipAmt > 0 && (
+  	<Stat label="Precip Amount" value={precipAmt} />
+      )}
+      {precipRate > 0 && (
+  	<Stat label="Precip Rate" value={precipRate} />
+      )}
+{/*
       <Stat
         label="Precip Rate"
         value={precipRate}
       />
+*/}
+{/*
       <Stat
         label="Precip Amount"
         value={precipAmt}
       />
+*/}
       {aqiVal != null && (
         <Stat
           label="Air Quality"
