@@ -160,7 +160,7 @@ const ForecastHighlights = ({ lat, lon }) => {
         fontSize: '9px',
         letterSpacing: '1px',
         textTransform: 'uppercase',
-        color: 'rgba(255,255,255,0.25)',
+        color: 'rgba(255,255,255,0.45)',
         textAlign: 'right'
       }}>
         National Weather Service

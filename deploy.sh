@@ -24,7 +24,7 @@ fi
 
 # ── github mode ───────────────────────────────────────────────────────────────
 if [ "$1" = "github" ]; then
-  COMMIT_MSG="${2:-"Update exercise app: $TIMESTAMP"}"
+  COMMIT_MSG="${2:-"Update weather app: $TIMESTAMP"}"
 
   echo "🚀 Starting GitHub Deployment..."
 

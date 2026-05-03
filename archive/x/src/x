@@ -1,8 +1,0 @@
-/* High temp — the dominant number, as large as the hero temp allows */
-.ds-temp-high {
-  font-size: clamp(56px, 15vw, 80px);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--text);
-  letter-spacing: -0.03em;
-}
