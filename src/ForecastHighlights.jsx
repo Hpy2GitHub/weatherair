@@ -46,10 +46,6 @@ const ForecastHighlights = ({ lat, lon }) => {
       const todayPeriod = periods[0];
       const tonightPeriod = periods[1];
       const tomorrowPeriod = periods[2];
- 
-      //console.log(`todayPeriod = ${todayPeriod}`);
-      //console.log(`tonightPeriod = ${tonightPeriod}`);
-      //console.log(`tomorrowPeriod = ${tomorrowPeriod}`);
       
       let summaryText = '';
       
@@ -59,8 +55,6 @@ const ForecastHighlights = ({ lat, lon }) => {
       } else if (tomorrowPeriod && tomorrowPeriod.detailedForecast) {
         summaryText = tomorrowPeriod.detailedForecast;
       }
-      //console.log(`todayPeriod.detailedForecast = ${todayPeriod.detailedForecast}`);
-      //console.log(`tomorrowPeriod.detailedForecast = ${tomorrowPeriod.detailedForecast}`);
       
       // Shorten if needed (first 250 chars)
       if (summaryText.length > 280) {
@@ -106,32 +100,55 @@ const ForecastHighlights = ({ lat, lon }) => {
   return (
     <div className="card fade-in-3">
       <p className="section-label">FORECAST HIGHLIGHTS</p>
-      <div style={{ 
-        padding: '8px 0 16px 0',
-        fontSize: '14px',
-        lineHeight: '1.6',
-        color: 'rgba(255,255,255,0.85)'
-      }}>
-        <p style={{ margin: 0 }}>
-          {highlights.summary}
-        </p>
-      </div>
       
-      {/* Optional: Show tonight's forecast as a second line */}
-      {highlights.tonight && highlights.tonight !== highlights.summary && (
+      {/* Today's Forecast Section */}
+      {highlights.today && (
+        <div style={{ 
+          padding: '8px 0 16px 0',
+        }}>
+          <p style={{ 
+            margin: 0,
+            fontSize: '14px',
+            lineHeight: '1.6',
+            color: 'rgba(255,255,255,0.85)'
+          }}>
+            <span style={{ 
+              textTransform: 'uppercase', 
+              fontSize: '11px', 
+              letterSpacing: '1.5px',
+              color: 'rgba(255,255,255,0.6)',
+              display: 'block',
+              marginBottom: '4px'
+            }}>
+              Today
+            </span>
+            {highlights.today}
+          </p>
+        </div>
+      )}
+      
+      {/* Tonight's Forecast Section */}
+      {highlights.tonight && (
         <div style={{
-          marginTop: '12px',
           paddingTop: '12px',
           borderTop: '1px solid rgba(255,255,255,0.08)'
         }}>
           <p style={{ 
             margin: 0, 
-            fontSize: '14px', 
-            color: 'rgba(255,255,255,0.6)',
+            fontSize: '14px',
+            lineHeight: '1.6',
+            color: 'rgba(255,255,255,0.85)'
           }}>
-            <span style={{ textTransform: 'uppercase', fontSize: '9px', letterSpacing: '1px' }}>
-              Tonight:
-            </span><br />
+            <span style={{ 
+              textTransform: 'uppercase', 
+              fontSize: '11px', 
+              letterSpacing: '1.5px',
+              color: 'rgba(255,255,255,0.6)',
+              display: 'block',
+              marginBottom: '4px'
+            }}>
+              Tonight
+            </span>
             {highlights.tonight}
           </p>
         </div>
