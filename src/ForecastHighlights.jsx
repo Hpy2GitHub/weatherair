@@ -87,6 +87,7 @@ const ForecastHighlights = ({ lat, lon }) => {
     return (
       <div className="card fade-in-3">
         <p className="section-label">FORECAST HIGHLIGHTS</p>
+<p>TODAY 2:58</p>
         <div style={{ 
           padding: '16px 0', 
           color: 'rgba(255,255,255,0.4)', 
