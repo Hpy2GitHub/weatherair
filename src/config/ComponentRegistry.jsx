@@ -17,6 +17,22 @@ export const componentRegistry = [
     required: false,
   },
   {
+    id: 'daysnaphot-today',
+    name: 'Today Essentials',
+    description: 'Quick current weather view',
+    defaultVisible: true,
+    category: 'simpler',
+    required: false,
+  },
+  {
+    id: 'daysnaphot-tomorrow',
+    name: 'Tomorrow Essentials',
+    description: 'Quick future weather view',
+    defaultVisible: true,
+    category: 'simpler',
+    required: false,
+  },
+  {
     id: 'stats',
     name: 'Current Weather Conditions',
     description: 'Wind, humidity, pressure, and other stats',

@@ -2,7 +2,6 @@
 import React from 'react';
 import { useVisibility } from '../context/VisibilityContext';
 import { useWeatherData } from '../hooks/useWeatherData';
-//import './CustomizePanel.css';
 import '../design-system.css';
 
 const CustomizePanel = () => {
@@ -12,7 +11,9 @@ const CustomizePanel = () => {
     componentRegistry,
     visibleComponents,
     toggleComponent,
-    resetToDefaults
+    resetToDefaults,
+    setAllOn, 
+    setAllOff 
   } = useVisibility();
   
   const { fetchWeather, coords, phase } = useWeatherData();
@@ -71,14 +72,15 @@ const CustomizePanel = () => {
           ))}
         </div>
 
+
         <div className="customize-footer">
           <div className="visibility-stats">
             {visibleComponents.length} of {componentRegistry.filter(comp => !comp.required).length} components visible
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button className="reset-btn" onClick={resetToDefaults}>
-              Reset to Defaults
-            </button>
+            <button className="reset-btn" onClick={setAllOff}>All off</button>
+            <button className="reset-btn" onClick={setAllOn}>All on</button>
+            <button className="reset-btn" onClick={resetToDefaults}>Reset</button>
           </div>
         </div>
       </div>

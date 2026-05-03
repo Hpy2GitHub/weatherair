@@ -12,6 +12,9 @@ export const useVisibility = () => {
   return context;
 };
 
+
+// To Do: and expose them in the context value object
+
 export const VisibilityProvider = ({ children }) => {
   const [visibility, setVisibility] = useState(() => {
     const saved = localStorage.getItem('weatherWidgets');
@@ -97,6 +100,45 @@ export const VisibilityProvider = ({ children }) => {
     setVisibility(defaults);
   }, []);
 
+//  const oldsetAllOn = () => {
+//    const toggleable = componentRegistry.filter(c => !c.required);
+//    setVisibleComponents(prev => {
+//      const currentIds = new Set(prev.map(v => v.id));
+//      const toAdd = toggleable.filter(c => !currentIds.has(c.id));
+//      return [...prev, ...toAdd];
+//    });
+//  };
+//  
+//  const oldsetAllOff = () => {
+//    setVisibleComponents(prev => prev.filter(c => c.required));
+//  };
+
+  // Replace the existing setAllOn and setAllOff
+  const setAllOn = useCallback(() => {
+    setVisibility(prev => {
+      const newState = { ...prev };
+      componentRegistry.forEach(comp => {
+        if (!comp.required) {
+          newState[comp.id] = true;
+        }
+      });
+      return newState;
+    });
+  }, [componentRegistry]);
+  
+  const setAllOff = useCallback(() => {
+    setVisibility(prev => {
+      const newState = { ...prev };
+      componentRegistry.forEach(comp => {
+        if (!comp.required) {
+          newState[comp.id] = false;
+        }
+      });
+      return newState;
+    });
+  }, [componentRegistry]);
+
+
   const isVisible = useCallback((componentId) => {
     //console.log(`=== IS VISIBLE CHECK: ${componentId} ===`);
     //console.log('Current visibility state:', visibility);
@@ -131,6 +173,8 @@ export const VisibilityProvider = ({ children }) => {
     isVisible,
     toggleComponent,
     resetToDefaults,
+    setAllOn,
+    setAllOff,
     isCustomizing,
     setIsCustomizing,
     visibleComponents,

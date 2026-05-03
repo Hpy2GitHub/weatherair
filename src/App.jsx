@@ -27,11 +27,41 @@ import WindCard from './WindCard';
 import HourlyPrecipitation from './HourlyPrecipitation';
 import MoonTable from './MoonTable';
 import DayLengthTracker from './DayLengthTracker';
+import DaySnapshot from './DaySnapshot';
+import TomorrowSnapshot from './TomorrowSnapshot';
 
 import { useWeatherData } from './hooks/useWeatherData';
 
 const toC = (f) => Math.round((f - 32) * 5 / 9);
 const fmtTemp = (f, unit) => unit === 'f' ? `${Math.round(f)}°` : `${toC(f)}°`;
+
+// ── DaySnapshot helpers ──────────────────────────────────────────────────────
+// Open-Meteo daily data arrives as flat parallel arrays.
+// These helpers extract one day's worth of data into a plain object.
+
+const getDailyData = (daily, i) => {
+  if (!daily?.time) return null;
+  return {
+    weather_code:                  daily.weather_code?.[i],
+    temperature_2m_max:            daily.temperature_2m_max?.[i],
+    temperature_2m_min:            daily.temperature_2m_min?.[i],
+    // apparent_temperature_max/min are not in the current API request.
+    // Add them to the daily fields in useWeatherData to enable feels-like.
+    apparent_temperature_max:      daily.apparent_temperature_max?.[i],
+    precipitation_probability_max: daily.precipitation_probability_max?.[i] ?? 0,
+  };
+};
+
+// Slices 24 hourly entries for dayOffset (0 = today, 1 = tomorrow).
+const getHourlyForDay = (hourly, dayOffset) => {
+  if (!hourly?.time) return [];
+  const start = dayOffset * 24;
+  return Array.from({ length: 24 }, (_, i) => ({
+    hour: i,
+    temperature_2m:            hourly.temperature_2m?.[start + i],
+    precipitation_probability: hourly.precipitation_probability?.[start + i] ?? 0,
+  }));
+};
 
 export default function App() {
   const { phase, weather, location, coords, setCoords, error, fetchWeather } = useWeatherData();
@@ -143,6 +173,28 @@ export default function App() {
         {/* Current Weather */}
         <ConditionalRenderer componentId="hero">
           <CurrentConditions current={weather?.current} unit={unit} fmt={fmt} />
+        </ConditionalRenderer>
+
+            {/* currentTemp={currentTemperature}   // from your weather API */ }
+        <ConditionalRenderer componentId="daysnapshot-today">
+          <DaySnapshot
+            label="Today"
+            day={getDailyData(weather?.daily, 0)}     // ← Fixed
+            hourly={getHourlyForDay(weather?.hourly, 0)}
+            currentTemp={weather?.current?.temperature_2m}   // ← Use real current temp
+            unit={unit}
+            fmt={fmt}
+          />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="daysnapshot-tomorrow">
+          <TomorrowSnapshot
+            label="Tomorrow"
+            day={getDailyData(weather?.daily, 1)}
+            hourly={getHourlyForDay(weather?.hourly, 1)}
+            unit={unit}
+            fmt={fmt}
+          />
         </ConditionalRenderer>
 
         {/* Weather Stats */}
