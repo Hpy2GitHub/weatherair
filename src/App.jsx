@@ -29,6 +29,7 @@ import MoonTable from './MoonTable';
 import DayLengthTracker from './DayLengthTracker';
 import DaySnapshot from './DaySnapshot';
 import TomorrowSnapshot from './TomorrowSnapshot';
+import DailyUV from './DailyUV';
 
 import { useWeatherData } from './hooks/useWeatherData';
 
@@ -218,6 +219,10 @@ export default function App() {
 
         <ConditionalRenderer componentId="hourlyprecip">
           <HourlyPrecipitation hourly={weather?.hourly} unit={unit} />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="dailyuv">
+          <DailyUV daily={weather?.daily} />
         </ConditionalRenderer>
 
         {/* 7-Day Forecast */}

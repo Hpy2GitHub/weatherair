@@ -65,6 +65,14 @@ export const componentRegistry = [
     required: false,
   },
   {
+    id: 'dailyuv',
+    name: 'Hourly EV (Bars)',
+    description: 'How much ev exposure and when',
+    defaultVisible: true,
+    category: 'forecast',
+    required: false,
+  },
+  {
     id: 'forecast',
     name: '7-Day Forecast',
     description: 'Weekly weather outlook',
