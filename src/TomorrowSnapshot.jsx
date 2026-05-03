@@ -163,12 +163,11 @@ export default function TomorrowSnapshot({ label = 'Today', day, hourly = [], un
     >
 
       {/* ── Day label ── */}
-      <p className="ds-label">{label}</p>
+      <p className="ds-hero">{label}</p>
 
       {/* ── Art + condition ── */}
       <div className="ds-hero">
         {ART[cond.type] ?? ART.cloudy}
-        <p className="ds-condition">Tomorrow</p>
         <p className="ds-condition">{cond.label}</p>
       </div>
 

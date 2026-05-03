@@ -172,15 +172,12 @@ export default function DaySnapshot({
       aria-label={`${label} weather: ${cond.label}`}
     >
 
-      {/* ── Day label (bigger for Tomorrow) ── */}
-      <p className={`ds-label ${label === 'Tomorrow' ? 'ds-label--large' : ''}`}>
-        {label}
-      </p>
+      {/* ── Day label ── */}
+      <p className="ds-hero">{label}</p>
 
       {/* ── Art + condition ── */}
       <div className="ds-hero">
         {ART[cond.type] ?? ART.cloudy}
-        Today
         <p className="ds-condition">{cond.label}</p>
       </div>
 

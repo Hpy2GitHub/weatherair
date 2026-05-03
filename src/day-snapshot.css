@@ -35,25 +35,33 @@
 
 /* Weather-type tints — subtle border + background wash per condition.
    Kept very low opacity so they read as hints, not blobs, on the dark bg. */
-.ds-card--sunny  {
-  background: linear-gradient(150deg, rgba(251,191,36,0.09) 0%, var(--surface) 70%);
-  border-color: rgba(251,191,36,0.18);
+.ds-card--sunny  { /* To Do: remove xx elements */
+  xxbackground: linear-gradient(150deg, rgba(251,191,36,0.09) 0%, var(--surface) 70%);
+  xxborder-color: rgba(251,191,36,0.18);
+  background: var(--surface);
+  border-color: var(--border);
 }
 .ds-card--cloudy {
   background: var(--surface);
   border-color: var(--border);
 }
 .ds-card--rainy  {
-  background: linear-gradient(150deg, rgba(96,165,250,0.09) 0%, var(--surface) 70%);
-  border-color: rgba(96,165,250,0.20);
+  xxbackground: linear-gradient(150deg, rgba(96,165,250,0.09) 0%, var(--surface) 70%);
+  xxborder-color: rgba(96,165,250,0.20);
+  background: var(--surface);
+  border-color: var(--border);
 }
 .ds-card--snowy  {
-  background: linear-gradient(150deg, rgba(186,230,253,0.07) 0%, var(--surface) 70%);
-  border-color: rgba(186,230,253,0.15);
+  xxbackground: linear-gradient(150deg, rgba(186,230,253,0.07) 0%, var(--surface) 70%);
+  xxborder-color: rgba(186,230,253,0.15);
+  background: var(--surface);
+  border-color: var(--border);
 }
 .ds-card--stormy {
-  background: linear-gradient(150deg, rgba(139,92,246,0.09) 0%, var(--surface) 70%);
-  border-color: rgba(139,92,246,0.18);
+  xxbackground: linear-gradient(150deg, rgba(139,92,246,0.09) 0%, var(--surface) 70%);
+  xxborder-color: rgba(139,92,246,0.18);
+  background: var(--surface);
+  border-color: var(--border);
 }
 
 /* ── Day label ──────────────────────────────────────────────────────────────
@@ -108,10 +116,19 @@
   flex-wrap: wrap;
 }
 
-.ds-temp-main {
+.old-ds-temp-main { /* remove later? */
   display: flex;
   align-items: baseline;
   gap: var(--sp-3);
+}
+
+/* High temp — the dominant number, as large as the hero temp allows */
+.ds-temp-main {
+  font-size: clamp(56px, 15vw, 80px);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text);
+  letter-spacing: -0.03em;
 }
 
 /* High temp — the dominant number, as large as the hero temp allows */
