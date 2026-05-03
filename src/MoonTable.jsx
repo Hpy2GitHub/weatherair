@@ -95,25 +95,25 @@ const MoonTable = ({ lat, lon }) => {
       <div className="card">
         <div className="section-label">MOON</div>
         
-        <div className="row" style={{ gap: 'var(--sp-6)', marginBottom: 'var(--sp-5)' }}>
+        <div className="moon-hero-times">
           <div>
-            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)' }}>Moonrise</div>
-            <div className="stat-value" style={{ fontSize: '24px', color: '#facc15' }}>{data.moonrise}</div>
+            <div className="moon-hero-label">Moonrise</div>
+            <div className="moon-hero-value">{data.moonrise}</div>
           </div>
           <div>
-            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)' }}>Moonset</div>
-            <div className="stat-value" style={{ fontSize: '24px', color: '#facc15' }}>{data.moonset}</div>
+            <div className="moon-hero-label">Moonset</div>
+            <div className="moon-hero-value">{data.moonset}</div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+        <div className="moon-preview">
           {data.daily.slice(0, 3).map((day, i) => (
-            <div key={i} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 'var(--text-2xs)', color: i === 0 ? 'var(--text)' : 'var(--muted)', marginBottom: '8px' }}>
+            <div key={i} className="moon-preview-day">
+              <div className={i === 0 ? 'moon-preview-label moon-preview-label--today' : 'moon-preview-label'}>
                 {day.dayName}
               </div>
               <MoonPhaseIcon phase={day.moonPhaseValue} size={46} />
-              <div style={{ marginTop: '6px', fontSize: 'var(--text-sm)' }}>{day.moonPhase}</div>
+              <div className="moon-preview-phase">{day.moonPhase}</div>
             </div>
           ))}
         </div>
@@ -122,26 +122,26 @@ const MoonTable = ({ lat, lon }) => {
       <div className="stack" style={{ marginTop: 'var(--sp-5)' }}>
         {data.daily.map((day, index) => (
           <div key={index} className="card">
-            <div className="row" style={{ alignItems: 'center' }}>
-              <div style={{ minWidth: '100px' }}>
-                <div style={{ fontWeight: 500 }}>{day.dayName}</div>
-                <div style={{ fontSize: 'var(--text-2xs)', color: 'var(--dim)' }}>{day.date}</div>
+            <div className="moon-row">
+              <div className="moon-row-name">
+                <div className="moon-row-day">{day.dayName}</div>
+                <div className="moon-row-date">{day.date}</div>
               </div>
 
-              <div style={{ display: 'flex', gap: '32px', flex: 1, justifyContent: 'center' }}>
+              <div className="moon-row-times">
                 <div>
-                  <div className="stat-label">RISE</div>
-                  <div className="stat-value" style={{ color: '#facc15' }}>{day.moonrise}</div>
+                  <div className="moon-row-label">RISE</div>
+                  <div className="moon-row-value">{day.moonrise}</div>
                 </div>
                 <div>
-                  <div className="stat-label">SET</div>
-                  <div className="stat-value" style={{ color: '#facc15' }}>{day.moonset}</div>
+                  <div className="moon-row-label">SET</div>
+                  <div className="moon-row-value">{day.moonset}</div>
                 </div>
               </div>
 
               <div className="moon-plus-label">
                 <MoonPhaseIcon phase={day.moonPhaseValue} size={36} />
-                <div style={{ fontSize: 'var(--text-sm)' }}>{day.moonPhase}</div>
+                <div className="moon-row-phase">{day.moonPhase}</div>
               </div>
             </div>
           </div>

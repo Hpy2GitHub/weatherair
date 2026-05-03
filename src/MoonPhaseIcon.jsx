@@ -1,5 +1,4 @@
 // MoonPhaseIcon.jsx
-// To Do: Edit the images to make the axis more consistent and the spacing around the image the same?
 import React from 'react';
 import './design-system.css';
 
@@ -26,20 +25,13 @@ const MoonPhaseIcon = ({ phase, size = 36 }) => {
     `${base}images/moon/moon14.jpg`,      // 13: back to New Moon
   ];
 
-  //console.log(`phase=${phase.toFixed(4)} → index=${index} → ${moonImages[index]}`);
-  //console.log(`MoonPhase Tile url=${moonImages[index]}`);
-
   return (
     <img
       src={moonImages[index]}
       alt="Moon Phase"
       width={size}
       height={size}
-      style={{
-        borderRadius: '50%',
-        objectFit: 'cover',
-        filter: 'brightness(1.1) contrast(1.1)'
-      }}
+      className="moon-phase-icon"
     />
   );
 };
