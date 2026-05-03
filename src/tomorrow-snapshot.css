@@ -1,5 +1,5 @@
 /*
- * DaySnapshot.css
+ * tomorrow-snapshot.css
  *
  * All colours, spacing, and radius values reference design-system.css tokens.
  * Nothing here will conflict with existing classes — every selector is
@@ -276,8 +276,6 @@
   .ds-art       { width: 64px; height: 64px; }
   .ds-rain-peak { display: none; }
 }
-
-/* -- added for current temp? --- */
 .ds-temp-main {
   margin-bottom: 8px;
 }

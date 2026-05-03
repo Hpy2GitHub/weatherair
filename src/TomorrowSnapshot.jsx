@@ -16,7 +16,7 @@
 // NOTE: apparent_temperature_max/min are not in the default API call.
 // Add them to the daily fields in useWeatherData to unlock feels-like display.
 
-import './TomorrowSnapshot.css';
+import './day-snapshot.css';
 
 const WMO = {
   0:  { label: 'Clear sky',          type: 'sunny'  },
@@ -140,7 +140,7 @@ const rainBarColor = (pct) => {
 
 // ── Component ────────────────────────────────────────────────────────────────
 
-export default function DaySnapshot({ label = 'Today', day, hourly = [], unit = 'f', fmt }) {
+export default function TomorrowSnapshot({ label = 'Today', day, hourly = [], unit = 'f', fmt }) {
   if (!day) return null;
 
   const cond         = WMO[day.weather_code] ?? { label: 'Unknown', type: 'cloudy' };
@@ -168,6 +168,7 @@ export default function DaySnapshot({ label = 'Today', day, hourly = [], unit = 
       {/* ── Art + condition ── */}
       <div className="ds-hero">
         {ART[cond.type] ?? ART.cloudy}
+        <p className="ds-condition">Tomorrow</p>
         <p className="ds-condition">{cond.label}</p>
       </div>
 

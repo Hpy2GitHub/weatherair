@@ -175,7 +175,6 @@ export default function App() {
           <CurrentConditions current={weather?.current} unit={unit} fmt={fmt} />
         </ConditionalRenderer>
 
-            {/* currentTemp={currentTemperature}   // from your weather API */ }
         <ConditionalRenderer componentId="daysnapshot-today">
           <DaySnapshot
             label="Today"

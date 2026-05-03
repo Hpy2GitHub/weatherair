@@ -1,5 +1,5 @@
 /*
- * TomorrowSnapshot.css
+ * DaySnapshot.css
  *
  * All colours, spacing, and radius values reference design-system.css tokens.
  * Nothing here will conflict with existing classes — every selector is
@@ -276,6 +276,8 @@
   .ds-art       { width: 64px; height: 64px; }
   .ds-rain-peak { display: none; }
 }
+
+/* -- added for current temp? --- */
 .ds-temp-main {
   margin-bottom: 8px;
 }
@@ -309,4 +311,22 @@
 .ds-temp-range .ds-temp-high,
 .ds-temp-range .ds-temp-low {
   font-size: 1.55rem;
+}
+/* Larger label for Tomorrow */
+.ds-label--large {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Current temperature container */
+.ds-temp-current {
+  margin-bottom: 0.25rem;
+}
+
+/* High/Low range row */
+.ds-temp-range {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }

@@ -3,20 +3,21 @@
 // dyslexia-friendly format.
 //
 // Props:
-//   label   — "Today" | "Tomorrow" (any string)
+//   label   — "Today" | "Day" (any string)
 //   day     — output of getDailyData() in App.jsx:
 //               { weather_code, temperature_2m_max, temperature_2m_min,
 //                 apparent_temperature_max (optional),
 //                 precipitation_probability_max }
 //   hourly  — output of getHourlyForDay() in App.jsx:
 //               [{ hour: 0–23, precipitation_probability, temperature_2m }]
+//   currentTemp — current temperature to display as the large primary value
 //   unit    — 'f' | 'c'
 //   fmt     — temperature formatter fn, e.g. (v) => `${Math.round(v)}°`
 //
 // NOTE: apparent_temperature_max/min are not in the default API call.
 // Add them to the daily fields in useWeatherData to unlock feels-like display.
 
-import './DaySnapshot.css';
+import './day-snapshot.css';
 
 const WMO = {
   0:  { label: 'Clear sky',          type: 'sunny'  },
@@ -139,6 +140,7 @@ const rainBarColor = (pct) => {
 };
 
 // ── Component ────────────────────────────────────────────────────────────────
+
 export default function DaySnapshot({ 
     label = 'Today', 
     day, 
@@ -151,17 +153,9 @@ export default function DaySnapshot({
   console.log(`DaySnapshot ${label} ${day} ${hourly} ${currentTemp} ${unit} ${fmt}`);
   if (!day) return null;
 
-  //const cond         = WMO[day.weather_code] ?? { label: 'Unknown', type: 'cloudy' };
-  //const maxRain      = day.precipitation_probability_max ?? 0;
-  //const hasFeelsLike = day.apparent_temperature_max != null;
-  const cond = WMO[day.weather_code] ?? { label: 'Unknown', type: 'cloudy' };
-  const maxRain = day.precipitation_probability_max ?? 0;
+  const cond         = WMO[day.weather_code] ?? { label: 'Unknown', type: 'cloudy' };
+  const maxRain      = day.precipitation_probability_max ?? 0;
   const hasFeelsLike = day.apparent_temperature_max != null;
-
-  // Fallback in case currentTemp is missing
-  const displayCurrent = currentTemp !== undefined && currentTemp !== null 
-    ? currentTemp 
-    : day.temperature_2m_max;
 
   // Hourly entry with the highest rain probability — used for peak time label.
   const peakHour = hourly.reduce(
@@ -172,45 +166,40 @@ export default function DaySnapshot({
   // 8 ticks across the day, one every 3 hours.
   const timeline = hourly.filter(h => h.hour % 3 === 0).slice(0, 8);
 
-{/*
   return (
     <article
       className={`ds-card ds-card--${cond.type} fade-in-2`}
       aria-label={`${label} weather: ${cond.label}`}
     >
 
-      <p className="ds-label">{label}</p>
+      {/* ── Day label (bigger for Tomorrow) ── */}
+      <p className={`ds-label ${label === 'Tomorrow' ? 'ds-label--large' : ''}`}>
+        {label}
+      </p>
 
+      {/* ── Art + condition ── */}
       <div className="ds-hero">
         {ART[cond.type] ?? ART.cloudy}
+        Today
         <p className="ds-condition">{cond.label}</p>
       </div>
-      
-      <div className="ds-temps">
-        <div className="ds-temp-main">
-          <span className="ds-temp-high">{fmt(day.temperature_2m_max)}</span>
-          <span className="ds-temp-low">{fmt(day.temperature_2m_min)}</span>
-        </div>
 
-        {hasFeelsLike && (
-          <div className="ds-feels">
-            <span className="ds-feels-label">Feels like</span>
-            <span className="ds-feels-val">{fmt(day.apparent_temperature_max)}</span>
-          </div>
-        )}
-      </div>
-      
+      {/* ── Temperature block ── */}
       <div className="ds-temps">
-        <div className="ds-temp-main">
-          <span className="ds-temp-current">{fmt(currentTemp)}</span>
+        <div className="ds-temp-current">
+          {currentTemp != null ? (
+            <span className="ds-temp-main">{fmt(currentTemp)}</span>
+          ) : (
+            <span className="ds-temp-main">{fmt(day.temperature_2m_max)}</span>
+          )}
         </div>
-      
+        
         <div className="ds-temp-range">
-          <span className="ds-temp-high">{fmt(day.temperature_2m_max)}</span>
-          <span className="ds-temp-dash">–</span>
+          <span className="ds-temp-low">{fmt(day.temperature_2m_max)}</span>
+          |
           <span className="ds-temp-low">{fmt(day.temperature_2m_min)}</span>
         </div>
-      
+
         {hasFeelsLike && (
           <div className="ds-feels">
             <span className="ds-feels-label">Feels like</span>
@@ -219,27 +208,7 @@ export default function DaySnapshot({
         )}
       </div>
 
-      <div className="ds-temps">
-        <div className="ds-temp-main">
-          <span className="ds-temp-current">
-            {currentTemp != null ? fmt(currentTemp) : fmt(day.temperature_2m_max)}
-          </span>
-        </div>
-      
-        <div className="ds-temp-range">
-          <span className="ds-temp-high">{fmt(day.temperature_2m_max)}</span>
-          <span className="ds-temp-dash">–</span>
-          <span className="ds-temp-low">{fmt(day.temperature_2m_min)}</span>
-        </div>
-      
-        {hasFeelsLike && (
-          <div className="ds-feels">
-            <span className="ds-feels-label">Feels like</span>
-            <span className="ds-feels-val">{fmt(day.apparent_temperature_max)}</span>
-          </div>
-        )}
-      </div>
-
+      {/* ── Rain block ── */}
       <div className="ds-rain">
         <div className="ds-rain-header">
           <svg className="ds-rain-drop" viewBox="0 0 20 20" aria-hidden="true">
@@ -281,44 +250,6 @@ export default function DaySnapshot({
         )}
       </div>
 
-    </article>
-  );
-*/}
-return (
-    <article className={`ds-card ds-card--${cond.type} fade-in-2`} aria-label={`${label} weather: ${cond.label}`}>
-
-      <p className="ds-label">{label}</p>
-
-      {/* Art + condition */}
-      <div className="ds-hero">
-        {ART[cond.type] ?? ART.cloudy}
-        <p className="ds-condition">{cond.label}</p>
-      </div>
-
-      {/* UPDATED TEMPERATURE BLOCK */}
-      <div className="ds-temps">
-        <div className="ds-temp-main">
-          <span className="ds-temp-current">
-            {fmt ? fmt(displayCurrent) : `${Math.round(displayCurrent)}°`}
-          </span>
-        </div>
-
-        <div className="ds-temp-range">
-          <span className="ds-temp-high">{fmt(day.temperature_2m_max)}</span>
-          <span className="ds-temp-dash">–</span>
-          <span className="ds-temp-low">{fmt(day.temperature_2m_min)}</span>
-        </div>
-
-        {hasFeelsLike && (
-          <div className="ds-feels">
-            <span className="ds-feels-label">Feels like</span>
-            <span className="ds-feels-val">{fmt(day.apparent_temperature_max)}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Rest of your rain block etc. stays the same */}
-      {/* ... */}
     </article>
   );
 }
