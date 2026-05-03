@@ -17,7 +17,7 @@ export const componentRegistry = [
     required: false,
   },
   {
-    id: 'daysnaphot-today',
+    id: 'daysnapshot-today',
     name: 'Today Essentials',
     description: 'Quick current weather view',
     defaultVisible: true,
@@ -25,7 +25,7 @@ export const componentRegistry = [
     required: false,
   },
   {
-    id: 'daysnaphot-tomorrow',
+    id: 'daysnapshot-tomorrow',
     name: 'Tomorrow Essentials',
     description: 'Quick future weather view',
     defaultVisible: true,
