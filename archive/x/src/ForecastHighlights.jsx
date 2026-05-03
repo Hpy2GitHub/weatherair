@@ -126,8 +126,9 @@ const ForecastHighlights = ({ lat, lon }) => {
         }}>
           <p style={{ 
             margin: 0, 
-            fontSize: '14px', 
+            fontSize: '12px', 
             color: 'rgba(255,255,255,0.6)',
+            fontStyle: 'italic'
           }}>
             <span style={{ textTransform: 'uppercase', fontSize: '9px', letterSpacing: '1px' }}>
               Tonight:

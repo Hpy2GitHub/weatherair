@@ -1,0 +1,224 @@
+import { useMemo } from 'react'
+import SunCalc from 'suncalc'
+
+// ─── Moon phase ───────────────────────────────────────────────────────────────
+
+const MOON_PHASES = [
+  { max: 0.0625, name: 'New Moon',        emoji: '🌑' },
+  { max: 0.1875, name: 'Waxing Crescent', emoji: '🌒' },
+  { max: 0.3125, name: 'First Quarter',   emoji: '🌓' },
+  { max: 0.4375, name: 'Waxing Gibbous',  emoji: '🌔' },
+  { max: 0.5625, name: 'Full Moon',       emoji: '🌕' },
+  { max: 0.6875, name: 'Waning Gibbous',  emoji: '🌖' },
+  { max: 0.8125, name: 'Last Quarter',    emoji: '🌗' },
+  { max: 0.9375, name: 'Waning Crescent', emoji: '🌘' },
+  { max: 1,      name: 'New Moon',        emoji: '🌑' },
+]
+
+const moonPhase = (phase) => MOON_PHASES.find((p) => phase <= p.max) ?? MOON_PHASES.at(-1)
+
+// ─── SVG helpers ─────────────────────────────────────────────────────────────
+
+const CX = 110, CY = 98, R = 80
+
+function polar(angleDeg) {
+  const rad = angleDeg * Math.PI / 180
+  return { x: CX + R * Math.cos(rad), y: CY - R * Math.sin(rad) }
+}
+
+// sweep=1 curves UP
+function arcD(startDeg, endDeg, sweep = 1) {
+  const s = polar(startDeg)
+  const e = polar(endDeg)
+  const large = Math.abs(startDeg - endDeg) > 180 ? 1 : 0
+  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${R} ${R} 0 ${large} ${sweep} ${e.x.toFixed(2)} ${e.y.toFixed(2)}`
+}
+
+function timeToDeg(t, start, end) {
+  const progress = (t - start) / (end - start)
+  return 180 - Math.max(0, Math.min(1, progress)) * 180
+}
+
+function fmtTime(d) {
+  if (!d || isNaN(d)) return '—'
+  return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+}
+
+function fmtDuration(ms) {
+  if (!ms || isNaN(ms)) return '—'
+  const h = Math.floor(ms / 3_600_000)
+  const m = Math.floor((ms % 3_600_000) / 60_000)
+  return `${h}h ${m}m`
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+export default function SkyEvents({ lat, lon }) {
+  const data = useMemo(() => {
+    if (lat == null || lon == null) return null
+
+    const now = new Date()
+
+    const sun  = SunCalc.getTimes(now, lat, lon)
+    const moon = SunCalc.getMoonTimes(now, lat, lon)
+    const ill  = SunCalc.getMoonIllumination(now)
+
+    return { sun, moon, ill, now }
+  }, [lat, lon])
+
+  if (!data) return null
+
+  const { sun, moon, ill, now } = data
+  const { sunrise, sunset, goldenHourEnd, goldenHour } = sun
+
+  // --- Sun Calculations ---
+  const sunDayLength = sunset - sunrise
+  const sunVisible   = now >= sunrise && now <= sunset
+  const sunDeg       = sunVisible ? timeToDeg(now, sunrise, sunset) : null
+  const sunPt        = sunVisible ? polar(sunDeg) : null
+
+  const ghMornEnd  = goldenHourEnd < sunset ? timeToDeg(goldenHourEnd, sunrise, sunset) : 150
+  const ghEveStart = goldenHour > sunrise  ? timeToDeg(goldenHour, sunrise, sunset) : 30
+
+  // --- Moon Calculations ---
+  let moonStart = moon.rise
+  let moonEnd = moon.set
+  let moonVisible = false
+
+  // Handle cross-midnight moon routing 
+  if (moon.rise && moon.set) {
+    if (moon.rise < moon.set) {
+      moonVisible = now >= moon.rise && now <= moon.set
+    } else {
+      // Moon set is before moon rise (spans midnight)
+      if (now <= moon.set) {
+        moonStart = new Date(moon.rise.getTime() - 24 * 3_600_000) // yesterday's rise
+        moonEnd = moon.set
+        moonVisible = true
+      } else if (now >= moon.rise) {
+        moonStart = moon.rise
+        moonEnd = new Date(moon.set.getTime() + 24 * 3_600_000) // tomorrow's set
+        moonVisible = true
+      }
+    }
+  }
+
+  const moonDayLength = moonEnd - moonStart
+  const moonDeg       = moonVisible ? timeToDeg(now, moonStart, moonEnd) : null
+  const moonPt        = moonVisible ? polar(moonDeg) : null
+
+  const phase = moonPhase(ill.phase)
+
+  return (
+    <div className="sky-events-container fade-in-4" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      
+      {/* ─── PANEL 1: SUN ─────────────────────────────────────────────── */}
+      <section className="card sky-card">
+        <p className="section-label">Sun</p>
+
+        <svg viewBox="0 0 220 120" className="sky-arc" aria-label={`Sunrise ${fmtTime(sunrise)}, Sunset ${fmtTime(sunset)}`}>
+          {/* Horizon line & Hemisphere */}
+          <line x1={CX - R - 8} y1={CY} x2={CX + R + 8} y2={CY} stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+          <path d={arcD(0, 180)} fill="rgba(0,0,0,0.18)" />
+
+          {/* Full Track arc */}
+          <path d={arcD(180, 0)} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="12" strokeLinecap="butt" />
+
+          {/* Golden hours & Daytime */}
+          <path d={arcD(180, ghMornEnd)} fill="none" stroke="#f59e0b" strokeWidth="12" strokeLinecap="butt" opacity="0.22" />
+          <path d={arcD(ghMornEnd, ghEveStart)} fill="none" stroke="#93c5fd" strokeWidth="12" strokeLinecap="butt" opacity="0.18" />
+          <path d={arcD(ghEveStart, 0)} fill="none" stroke="#f59e0b" strokeWidth="12" strokeLinecap="butt" opacity="0.22" />
+
+          {/* Elapsed arc */}
+          {sunVisible && (
+            <path d={arcD(180, sunDeg)} fill="none" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round" opacity="0.7" />
+          )}
+
+          {/* Sun Current Position Dot & Time */}
+          {sunVisible && sunPt && (
+            <g className="current-time-marker">
+              <circle cx={sunPt.x} cy={sunPt.y} r={9} fill="#fbbf24" opacity="0.18" />
+              <circle cx={sunPt.x} cy={sunPt.y} r={5} fill="#fde68a" />
+              <text x={sunPt.x} y={sunPt.y - 14} textAnchor="middle" fontSize="9" fill="#fde68a" fontWeight="bold">
+                {fmtTime(now)}
+              </text>
+            </g>
+          )}
+
+          {/* Labels */}
+          <circle cx={polar(180).x} cy={CY} r={3} fill="rgba(255,255,255,0.2)" />
+          <circle cx={polar(0).x} cy={CY} r={3} fill="rgba(255,255,255,0.2)" />
+          <text x={polar(180).x - 2} y={CY + 14} textAnchor="middle" fontSize="8.5" fill="rgba(255,255,255,0.35)" fontFamily="DM Mono, monospace">{fmtTime(sunrise)}</text>
+          <text x={polar(0).x + 2} y={CY + 14} textAnchor="middle" fontSize="8.5" fill="rgba(255,255,255,0.35)" fontFamily="DM Mono, monospace">{fmtTime(sunset)}</text>
+          <text x={CX} y={CY + 14} textAnchor="middle" fontSize="8.5" fill="rgba(255,255,255,0.22)" fontFamily="DM Mono, monospace">{fmtDuration(sunDayLength)}</text>
+        </svg>
+
+        <div className="sky-rows">
+          <div className="sky-row">
+            <span className="sky-label">Golden hour</span>
+            <span className="sky-val amber">{fmtTime(sunrise)} – {fmtTime(goldenHourEnd)}</span>
+          </div>
+          <div className="sky-row">
+            <span className="sky-label">Evening golden</span>
+            <span className="sky-val amber">{fmtTime(goldenHour)} – {fmtTime(sunset)}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── PANEL 2: MOON ────────────────────────────────────────────── */}
+      <section className="card sky-card">
+        <div className="moon-header" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+          <span className="moon-emoji" style={{ fontSize: '2rem' }}>{phase.emoji}</span>
+          <div>
+            <p className="moon-name" style={{ margin: 0, fontWeight: 500 }}>{phase.name}</p>
+            <p className="moon-illum" style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7 }}>{Math.round(ill.fraction * 100)}% illuminated</p>
+          </div>
+        </div>
+
+        <svg viewBox="0 0 220 120" className="sky-arc" aria-label={`Moonrise ${fmtTime(moonStart)}, Moonset ${fmtTime(moonEnd)}`}>
+          {/* Horizon line & Hemisphere */}
+          <line x1={CX - R - 8} y1={CY} x2={CX + R + 8} y2={CY} stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+          <path d={arcD(0, 180)} fill="rgba(0,0,0,0.18)" />
+
+          {/* Full Track arc */}
+          <path d={arcD(180, 0)} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="12" strokeLinecap="butt" />
+
+          {/* Elapsed arc */}
+          {moonVisible && (
+            <path d={arcD(180, moonDeg)} fill="none" stroke="#cbd5e1" strokeWidth="3" strokeLinecap="round" opacity="0.6" />
+          )}
+
+          {/* Moon Current Position Dot & Time */}
+          {moonVisible && moonPt && (
+            <g className="current-time-marker">
+              <circle cx={moonPt.x} cy={moonPt.y} r={9} fill="#e2e8f0" opacity="0.18" />
+              <circle cx={moonPt.x} cy={moonPt.y} r={5} fill="#f1f5f9" />
+              <text x={moonPt.x} y={moonPt.y - 14} textAnchor="middle" fontSize="9" fill="#f1f5f9" fontWeight="bold">
+                {fmtTime(now)}
+              </text>
+            </g>
+          )}
+
+          {/* Labels */}
+          <circle cx={polar(180).x} cy={CY} r={3} fill="rgba(255,255,255,0.2)" />
+          <circle cx={polar(0).x} cy={CY} r={3} fill="rgba(255,255,255,0.2)" />
+          <text x={polar(180).x - 2} y={CY + 14} textAnchor="middle" fontSize="8.5" fill="rgba(255,255,255,0.35)" fontFamily="DM Mono, monospace">{fmtTime(moon.rise)}</text>
+          <text x={polar(0).x + 2} y={CY + 14} textAnchor="middle" fontSize="8.5" fill="rgba(255,255,255,0.35)" fontFamily="DM Mono, monospace">{fmtTime(moon.set)}</text>
+          <text x={CX} y={CY + 14} textAnchor="middle" fontSize="8.5" fill="rgba(255,255,255,0.22)" fontFamily="DM Mono, monospace">{fmtDuration(moonDayLength)}</text>
+        </svg>
+
+        <div className="sky-rows">
+          <div className="sky-row">
+            <span className="sky-label">Moonrise</span>
+            <span className="sky-val">{fmtTime(moon.rise)}</span>
+          </div>
+          <div className="sky-row last">
+            <span className="sky-label">Moonset</span>
+            <span className="sky-val">{fmtTime(moon.set)}</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  )
+}
