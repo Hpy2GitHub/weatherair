@@ -2007,13 +2007,20 @@ input:disabled + .toggle-slider {
   color: var(--text);
 }
 
-.moon-preview-phase {
+.xxmoon-preview-phase {
   font-size: var(--text-sm);
   color: var(--text);
-  white-space: nowrap;
+  xxxwhite-space: nowrap;
   font-size: 11px;
 }
 
+.moon-preview-phase { /* Forces the container to be only as wide as the longest word */
+  font-size: 11px;
+  color: var(--text);
+  display: block; 
+  width: min-content;
+  white-space: normal; 
+} 
 /* ── 7-day list rows ─────────────────────────────────────────────────── */
 .moon-row {
   display: grid;
