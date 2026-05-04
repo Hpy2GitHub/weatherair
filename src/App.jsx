@@ -6,7 +6,6 @@ import CustomizePanel from './components/CustomizePanel';
 import CustomizeButton from './components/CustomizeButton';
 import DebugComponent from './DebugComponent';
 import FluTrend from './FluTrend';
-
 import WeatherHeader from './WeatherHeader';
 import CurrentConditions from './CurrentConditions';
 import WeatherStats from './WeatherStats';
@@ -31,7 +30,8 @@ import DaySnapshot from './DaySnapshot';
 import TomorrowSnapshot from './TomorrowSnapshot';
 import DailyUV from './DailyUV';
 import PrecipProbabilityTimeline from './PrecipProbabilityTimeline';
-
+import DewPointComfort from './DewPointComfort';
+import PressureTrend from './PressureTrend';
 import { useWeatherData } from './hooks/useWeatherData';
 
 const toC = (f) => Math.round((f - 32) * 5 / 9);
@@ -208,6 +208,14 @@ export default function App() {
           <WindCard current={weather?.current} hourly={weather?.hourly} unit={unit} />
         </ConditionalRenderer>
 
+        <ConditionalRenderer componentId="dewpoint">
+          <DewPointComfort current={weather?.current} hourly={weather?.hourly} />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="pressure-trends">
+          <PressureTrend current={weather?.current} hourly={weather?.hourly} />
+        </ConditionalRenderer>
+
         {/* National Weather Service Text - Use its OWN componentId */}
         <ConditionalRenderer componentId="nwsforecast">
           <ForecastHighlights lat={activeCoords.lat} lon={activeCoords.lon} />
@@ -225,6 +233,7 @@ export default function App() {
         <ConditionalRenderer componentId="precip-prob-timeline">
           <PrecipProbabilityTimeline weatherData={weather} />
         </ConditionalRenderer>
+
 
         <ConditionalRenderer componentId="dailyuv">
           <DailyUV daily={weather?.daily} />
