@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "don't run without editing"
+exit 1
+
 FILE="App.css"  # Change this or pass as parameter
 
 # If argument provided, use it instead

@@ -1,4 +1,6 @@
 #!/usr/bin/bash
+echo "don't run w/o editing"
+exit 1
 
 # Ensure we are using the correct name
 REPO="Hpy2GitHub/weatherair"
