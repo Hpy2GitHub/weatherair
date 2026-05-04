@@ -30,6 +30,7 @@ import DayLengthTracker from './DayLengthTracker';
 import DaySnapshot from './DaySnapshot';
 import TomorrowSnapshot from './TomorrowSnapshot';
 import DailyUV from './DailyUV';
+import PrecipProbabilityTimeline from './PrecipProbabilityTimeline';
 
 import { useWeatherData } from './hooks/useWeatherData';
 
@@ -219,6 +220,10 @@ export default function App() {
 
         <ConditionalRenderer componentId="hourlyprecip">
           <HourlyPrecipitation hourly={weather?.hourly} unit={unit} />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="precip-prob-timeline">
+          <PrecipProbabilityTimeline weatherData={weather} />
         </ConditionalRenderer>
 
         <ConditionalRenderer componentId="dailyuv">

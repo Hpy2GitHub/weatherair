@@ -2309,3 +2309,225 @@ input:disabled + .toggle-slider {
     align-self: center;
   }
 }
+/* ─────────────────────────────────────────────────────────────────────────
+   PRECIPITATION PROBABILITY TIMELINE
+───────────────────────────────────────────────────────────────────────── */
+
+.precip-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* ── Header row ──────────────────────────────────────────────────────── */
+.precip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+}
+
+.precip-peak {
+  font-size: var(--text-xs);
+  letter-spacing: 0.5px;
+}
+
+/* ── Probability text colors ─────────────────────────────────────────── */
+.precip-text--high { color: var(--status-red); }
+.precip-text--med  { color: var(--status-orange); }
+.precip-text--low  { color: var(--accent); }
+
+/* ── Timeline graph container ─────────────────────────────────────────── */
+.precip-timeline {
+  display: flex;
+  gap: var(--sp-2);
+  height: 80px;
+}
+
+/* ── Y-axis labels ───────────────────────────────────────────────────── */
+.precip-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 2px;
+  font-size: var(--text-3xs);
+  letter-spacing: 0.5px;
+  color: var(--dim);
+  min-width: 24px;
+  text-align: right;
+}
+
+/* ── Graph area ──────────────────────────────────────────────────────── */
+.precip-graph {
+  flex: 1;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+}
+
+.precip-grid-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--border-2);
+}
+
+/* ── Bar container ───────────────────────────────────────────────────── */
+.precip-bars {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1px;
+}
+
+.precip-bar-wrapper {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  cursor: pointer;
+}
+
+.precip-bar {
+  width: 100%;
+  min-height: 1px;
+  border-radius: 1px 1px 0 0;
+  transition: opacity 0.2s;
+}
+
+.precip-bar-wrapper:hover .precip-bar {
+  opacity: 0.8;
+}
+
+/* ── Bar colors ──────────────────────────────────────────────────────── */
+.precip-bar--none   { background: transparent; }
+.precip-bar--light  { background: rgba(96, 165, 250, 0.15); }
+.precip-bar--blue   { background: var(--accent); opacity: 0.5; }
+.precip-bar--yellow { background: var(--status-yellow); opacity: 0.7; }
+.precip-bar--orange { background: var(--status-orange); opacity: 0.8; }
+.precip-bar--red    { background: var(--status-red); opacity: 0.85; }
+
+/* ── X-axis labels ───────────────────────────────────────────────────── */
+.precip-x-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-3xs);
+  letter-spacing: 0.5px;
+  color: var(--dim);
+  padding-left: 28px;  /* align with graph area */
+  margin-top: var(--sp-1);
+}
+
+/* ── 7-Day Summary ───────────────────────────────────────────────────── */
+.precip-summary {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+.precip-summary-label {
+  font-size: var(--text-2xs);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: var(--sp-3);
+}
+
+/* ── Summary rows ────────────────────────────────────────────────────── */
+.precip-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) 0;
+}
+
+.precip-day {
+  width: 48px;
+  font-size: var(--text-sm);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.precip-day--today {
+  color: var(--text);
+}
+
+/* ── Probability track ───────────────────────────────────────────────── */
+.precip-prob-track {
+  flex: 1;
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.precip-prob-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  min-width: 2px;
+  transition: width 0.4s ease;
+}
+
+/* Fill colors match bar colors */
+.precip-prob-fill.precip-bar--none   { background: transparent; }
+.precip-prob-fill.precip-bar--light  { background: rgba(96, 165, 250, 0.2); }
+.precip-prob-fill.precip-bar--blue   { background: var(--accent); opacity: 0.5; }
+.precip-prob-fill.precip-bar--yellow { background: var(--status-yellow); opacity: 0.7; }
+.precip-prob-fill.precip-bar--orange { background: var(--status-orange); opacity: 0.8; }
+.precip-prob-fill.precip-bar--red    { background: var(--status-red); opacity: 0.85; }
+
+/* ── Row data columns ────────────────────────────────────────────────── */
+.precip-prob-num {
+  width: 36px;
+  font-size: var(--text-sm);
+  text-align: right;
+  flex-shrink: 0;
+  font-family: var(--mono);
+}
+
+.precip-amount {
+  width: 44px;
+  font-size: var(--text-xs);
+  color: var(--muted);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.precip-weather {
+  width: 52px;
+  font-size: var(--text-2xs);
+  color: var(--dim);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── Legend ──────────────────────────────────────────────────────────── */
+.precip-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+.precip-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--text-3xs);
+  letter-spacing: 0.5px;
+  color: var(--dim);
+}
+
+.precip-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
