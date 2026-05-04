@@ -181,7 +181,7 @@ export const componentRegistry = [
     name: 'Forecast Highlights',
     description: 'National Weather Service Summary',
     defaultVisible: true,
-    category: 'forecast',
+    category: 'simpler',
     required: false,
   },
   {
