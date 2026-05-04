@@ -2010,6 +2010,8 @@ input:disabled + .toggle-slider {
 .moon-preview-phase {
   font-size: var(--text-sm);
   color: var(--text);
+  white-space: nowrap;
+  font-size: 11px;
 }
 
 /* ── 7-day list rows ─────────────────────────────────────────────────── */
