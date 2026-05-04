@@ -4,6 +4,19 @@ import SunCalc from 'suncalc';
 import MoonPhaseIcon from './MoonPhaseIcon';
 import './design-system.css';
 
+// Renders "11:19" with "PM" on a second line for compact mobile display
+const SplitTime = ({ time }) => {
+  if (!time || time === '—') return <span>—</span>;
+  const match = time.match(/^(.+?)\s*(AM|PM)$/i);
+  if (!match) return <span>{time}</span>;
+  return (
+    <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.15 }}>
+      <span>{match[1]}</span>
+      <span style={{ fontSize: '0.7em', opacity: 0.8 }}>{match[2]}</span>
+    </span>
+  );
+};
+
 const MoonTable = ({ lat, lon }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,7 +45,7 @@ const MoonTable = ({ lat, lon }) => {
 
         daily.push({
           date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          dayName: i === 0 ? "Today" : date.toLocaleDateString('en-US', { weekday: 'long' }),
+          dayName: i === 0 ? "Today" : date.toLocaleDateString('en-US', { weekday: 'short' }),
           moonrise: moonTimes.rise 
             ? moonTimes.rise.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
             : "—",
@@ -98,11 +111,11 @@ const MoonTable = ({ lat, lon }) => {
         <div className="moon-hero-times">
           <div>
             <div className="moon-hero-label">Moonrise</div>
-            <div className="moon-hero-value">{data.moonrise}</div>
+            <div className="moon-hero-value"><SplitTime time={data.moonrise} /></div>
           </div>
           <div>
             <div className="moon-hero-label">Moonset</div>
-            <div className="moon-hero-value">{data.moonset}</div>
+            <div className="moon-hero-value"><SplitTime time={data.moonset} /></div>
           </div>
         </div>
 
@@ -131,11 +144,11 @@ const MoonTable = ({ lat, lon }) => {
               <div className="moon-row-times">
                 <div>
                   <div className="moon-row-label">RISE</div>
-                  <div className="moon-row-value">{day.moonrise}</div>
+                  <div className="moon-row-value"><SplitTime time={day.moonrise} /></div>
                 </div>
                 <div>
                   <div className="moon-row-label">SET</div>
-                  <div className="moon-row-value">{day.moonset}</div>
+                  <div className="moon-row-value"><SplitTime time={day.moonset} /></div>
                 </div>
               </div>
 
