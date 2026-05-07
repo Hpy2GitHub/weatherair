@@ -1,18 +1,21 @@
 // WeatherWatch.jsx
 import React from 'react';
+const base = import.meta.env.BASE_URL;
 
 const WMO = {
-  0:  { label: 'Clear Sky',          image: '/images/sky/clear-sky.jpg' },
-  1:  { label: 'Mainly Clear',       image: '/images/sky/clear-sky.jpg' },
-  2:  { label: 'Partly Cloudy',      image: '/images/sky/clear-sky.jpg' },
-  3:  { label: 'Overcast',           image: '/images/sky/clear-sky.jpg' },
-  95: { label: 'Thunderstorm',      image: '/images/sky/clear-sky.jpg' },
+  0:  { label: 'Clear Sky',          image: `${base}images/sky/clear-sky.jpg` },
+  1:  { label: 'Mainly Clear',       image: `${base}images/sky/clear-sky.jpg` },
+  2:  { label: 'Partly Cloudy',      image: `${base}images/sky/clear-sky.jpg` },
+  3:  { label: 'Overcast',           image: `${base}images/sky/clear-sky.jpg` },
+  95: { label: 'Thunderstorm',       image: `${base}images/sky/clear-sky.jpg` },
 };
 
 export default function WeatherWatch({ current, daily, unit }) {
+  console.log('WeatherWatch: current=', current);
   if (!current) return null;
 
-  const cond = WMO[current.weather_code] || { label: 'Unknown', image: '/images/sky/clear-sky.jpg' };
+  const cond = WMO[current.weather_code] || { label: 'Unknown', image: `${base}/images/sky/clear-sky.jpg` };
+  console.log(`WeatherWatch: weather_code=${current.weather_code} cond=${cond.image}`);
   const precip = daily?.precipitation_probability_max?.[0];
   const windUnit = unit === 'ms' ? 'm/s' : 'km/h';
   
