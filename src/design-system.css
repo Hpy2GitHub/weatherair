@@ -2965,3 +2965,84 @@ input:disabled + .toggle-slider {
 
 .pres-ref-item--high .pres-ref-dot { background: var(--accent); }
 .pres-ref-item--low  .pres-ref-dot { background: var(--status-red); }
+
+/* ----------NEW-----------*/
+.ww-watch-case {
+  width: 340px;
+  height: 340px;
+  margin: 2rem auto;
+  border-radius: 50%;
+  background: #1a1a1a;
+  padding: 12px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+  border: 1px solid #333;
+}
+
+.ww-face {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.ww-bg-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+}
+
+.ww-glass-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+/* THIS SECTION FIXES THE BUNCHING ISSUE */
+.ww-content-layer {
+  height: 100%; /* REQUIRED */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes top to top, bottom to bottom */
+  align-items: center;
+  padding: 35px 20px;
+  color: white;
+  text-align: center;
+}
+
+.ww-main-temp { font-size: 4.5rem; font-weight: 300; line-height: 1; }
+.ww-sub-label { font-size: 0.65rem; color: rgba(255,255,255,0.6); letter-spacing: 1px; }
+
+.ww-middle-stack { width: 100%; }
+
+.ww-highlow-row { display: flex; justify-content: center; gap: 30px; }
+
+.ww-watch-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  width: 70%;
+  margin: 10px auto;
+}
+
+.ww-trio-row { display: flex; justify-content: space-between; width: 100%; }
+
+.ww-mini-stat { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.ww-tiny-label { font-size: 0.55rem; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
+.ww-stat-val { font-size: 0.9rem; font-family: monospace; }
+
+.ww-wind-box { display: flex; align-items: center; gap: 4px; }
+.ww-arrow { display: inline-block; transition: transform 1s ease; color: #00d4ff; }
+
+.ww-condition-name { font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 4px; }
+.ww-date-row { 
+  display: flex; 
+  gap: 15px; 
+  font-size: 0.8rem; 
+  border-top: 1px solid rgba(255,255,255,0.1); 
+  padding-top: 5px; 
+}
+.ww-day-accent { color: #00d4ff; font-weight: bold; }

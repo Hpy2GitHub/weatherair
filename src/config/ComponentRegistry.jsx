@@ -17,6 +17,14 @@ export const componentRegistry = [
     required: false,
   },
   {
+    id: 'weather-watch',
+    name: 'Weather Watch',
+    description: 'Weather like a wristwatch dial',
+    defaultVisible: true,
+    category: 'weather',
+    required: false,
+  },
+  {
     id: 'daysnapshot-today',
     name: 'Today Essentials',
     description: 'Quick current weather view',

@@ -32,6 +32,7 @@ import DailyUV from './DailyUV';
 import PrecipProbabilityTimeline from './PrecipProbabilityTimeline';
 import DewPointComfort from './DewPointComfort';
 import PressureTrend from './PressureTrend';
+import WeatherWatch from './WeatherWatch';
 import { useWeatherData } from './hooks/useWeatherData';
 
 const toC = (f) => Math.round((f - 32) * 5 / 9);
@@ -175,6 +176,10 @@ export default function App() {
         {/* Current Weather */}
         <ConditionalRenderer componentId="hero">
           <CurrentConditions current={weather?.current} unit={unit} fmt={fmt} />
+        </ConditionalRenderer>
+
+        <ConditionalRenderer componentId="weather-watch">
+          <WeatherWatch current={weather?.current} daily={weather?.daily} unit={unit} />
         </ConditionalRenderer>
 
         <ConditionalRenderer componentId="daysnapshot-today">

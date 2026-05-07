@@ -17,6 +17,29 @@ const SplitTime = ({ time }) => {
   );
 };
 
+// Maps a raw SunCalc phase (0–1) to the canonical center of its named phase bucket.
+// This ensures the MoonPhaseIcon always matches the text label — two days that are
+// both "Last Quarter" will render the same icon, not different stages within that range.
+const PHASE_BUCKETS = [
+  { max: 0.0625, name: "New Moon",        canonical: 0.0    },
+  { max: 0.1875, name: "Waxing Crescent", canonical: 0.125  },
+  { max: 0.3125, name: "First Quarter",   canonical: 0.25   },
+  { max: 0.4375, name: "Waxing Gibbous",  canonical: 0.375  },
+  { max: 0.5625, name: "Full Moon",       canonical: 0.5    },
+  { max: 0.6875, name: "Waning Gibbous",  canonical: 0.625  },
+  { max: 0.8125, name: "Last Quarter",    canonical: 0.75   },
+  { max: 0.9375, name: "Waning Crescent", canonical: 0.875  },
+  { max: 1.0,    name: "New Moon",        canonical: 0.0    },
+];
+
+const getMoonPhaseInfo = (phase) => {
+  const bucket = PHASE_BUCKETS.find(b => phase < b.max) ?? PHASE_BUCKETS[PHASE_BUCKETS.length - 1];
+  return { name: bucket.name, canonical: bucket.canonical };
+};
+
+// Legacy helper kept for any callers that only need the name string
+const getMoonPhaseName = (phase) => getMoonPhaseInfo(phase).name;
+
 const MoonTable = ({ lat, lon }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -43,17 +66,22 @@ const MoonTable = ({ lat, lon }) => {
         const moonTimes = SunCalc.getMoonTimes(date, latitude, longitude);
         const moonIllumination = SunCalc.getMoonIllumination(date);
 
+        // Use canonical phase so the icon always matches the label
+        const { name, canonical } = getMoonPhaseInfo(moonIllumination.phase);
+
         daily.push({
           date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
           dayName: i === 0 ? "Today" : date.toLocaleDateString('en-US', { weekday: 'short' }),
-          moonrise: moonTimes.rise 
+          moonrise: moonTimes.rise
             ? moonTimes.rise.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
             : "—",
-          moonset: moonTimes.set 
+          moonset: moonTimes.set
             ? moonTimes.set.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
             : "—",
-          moonPhase: getMoonPhaseName(moonIllumination.phase),
-          moonPhaseValue: moonIllumination.phase
+          moonPhase: name,
+          // Pass canonical so MoonPhaseIcon renders the representative image for this phase,
+          // not the raw interpolated value which causes label/icon mismatches.
+          moonPhaseValue: canonical,
         });
       }
 
@@ -69,27 +97,6 @@ const MoonTable = ({ lat, lon }) => {
       setLoading(false);
     }
   }, [lat, lon]);
-
-
-  const getMoonPhaseName = (phase) => {
-    if (phase < 0.0625) return "New Moon";
-    if (phase < 0.1875) return "Waxing Crescent";
-    if (phase < 0.3125) return "First Quarter";
-    if (phase < 0.4375) return "Waxing Gibbous";
-    if (phase < 0.5625) return "Full Moon";
-    if (phase < 0.6875) return "Waning Gibbous";
-    if (phase < 0.8125) return "Last Quarter";
-    if (phase < 0.9375) return "Waning Crescent";
-    return "New Moon";
-  };
-
-  // Now it’s safe to use getMoonPhaseName
-  const todays_date = new Date();
-  const d = todays_date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  const my_moonIllumination = SunCalc.getMoonIllumination(todays_date);
-  const myphase = getMoonPhaseName(my_moonIllumination.phase);
-  //console.log(`MoonTable ${d} phase=${myphase}`);
-
 
   if (loading) return <div className="screen-center"><div className="spinner" style={{fontSize:'48px'}}>🌙</div><div className="loader-text">Calculating...</div></div>;
   if (error) return <div className="card" style={{textAlign:'center', padding:'var(--sp-6)'}}><div style={{fontSize:'42px'}}>🌑</div><div className="error-text">{error}</div></div>;
@@ -107,7 +114,7 @@ const MoonTable = ({ lat, lon }) => {
 
       <div className="card">
         <div className="section-label">MOON</div>
-        
+
         <div className="moon-hero-times">
           <div>
             <div className="moon-hero-label">Moonrise</div>
