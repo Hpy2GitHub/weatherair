@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Images Gallery - Verify WMO vs Images</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 25px;
+        }
+        
+        h1 {
+            color: #1a237e;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4CAF50;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .card {
+            float: left;
+            width: 320px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .image-container {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-missing {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #ffebee;
+            color: #c62828;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+            border-radius: 50%;
+        }
+        
+        .card-content {
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+        
+        .json-data {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            line-height: 1.5;
+            color: #333;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .json-key {
+            color: #0066cc;
+            font-weight: bold;
+        }
+        
+        .json-number {
+            color: #ff6b6b;
+        }
+        
+        .json-string {
+            color: #2e7d32;
+        }
+        
+        .label-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .badge-exists {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        
+        .badge-missing {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .badge-mismatch {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        
+        .icon-display {
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .label-name {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #1a237e;
+            text-align: center;
+        }
+        
+        .code-display {
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        
+        @media (max-width: 700px) {
+            .card {
+                width: calc(50% - 20px);
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏞️ Weather Images Gallery</h1>
+        <div class="subtitle">Verifying WMO weather codes against actual image files</div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">Total WMO Codes</div>
+                <div class="stat-value">26</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Images Found</div>
+                <div class="stat-value" style="color: #2e7d32;">26</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Images Missing</div>
+                <div class="stat-value" style="color: #c62828;">0</div>
+            </div>
+        </div>
+        
+        <div class="gallery clearfix">
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="clear-sky.jpg" alt="Clear Sky" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">☀️</div>
+                    <div class="label-name">Clear Sky</div>
+                    <div class="code-display">WMO Code: 0</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">0</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Clear Sky"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"☀️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"clear-sky.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="mainly-clear.png" alt="Mainly Clear" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌤️</div>
+                    <div class="label-name">Mainly Clear</div>
+                    <div class="code-display">WMO Code: 1</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Mainly Clear"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌤️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"mainly-clear.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="partly-cloudy.jpg" alt="Partly Cloudy" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">⛅</div>
+                    <div class="label-name">Partly Cloudy</div>
+                    <div class="code-display">WMO Code: 2</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">2</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Partly Cloudy"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"⛅"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"partly-cloudy.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="overcast.jpg" alt="Overcast" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">☁️</div>
+                    <div class="label-name">Overcast</div>
+                    <div class="code-display">WMO Code: 3</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">3</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Overcast"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"☁️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"overcast.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="freezing-fog.png" alt="Foggy" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌫️</div>
+                    <div class="label-name">Foggy</div>
+                    <div class="code-display">WMO Code: 45</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">45</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Foggy"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌫️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"freezing-fog.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="freezing-fog.png" alt="Icy Fog" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌫️</div>
+                    <div class="label-name">Icy Fog</div>
+                    <div class="code-display">WMO Code: 48</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">48</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Icy Fog"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌫️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"freezing-fog.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="drizzle.png" alt="Light arizzle" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌦️</div>
+                    <div class="label-name">Light arizzle</div>
+                    <div class="code-display">WMO Code: 51</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">51</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Light arizzle"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌦️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"drizzle.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="drizzle.png" alt="Drizzle" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌦️</div>
+                    <div class="label-name">Drizzle</div>
+                    <div class="code-display">WMO Code: 53</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">53</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Drizzle"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌦️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"drizzle.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="drizzle.png" alt="Heavy Drizzle" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌧️</div>
+                    <div class="label-name">Heavy Drizzle</div>
+                    <div class="code-display">WMO Code: 55</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">55</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Heavy Drizzle"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌧️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"drizzle.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="freezing-drizzle.png" alt="Freezing Drizzle" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌧️</div>
+                    <div class="label-name">Freezing Drizzle</div>
+                    <div class="code-display">WMO Code: 56</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">56</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Freezing Drizzle"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌧️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"freezing-drizzle.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="heavy-freezing-drizzle.jpg" alt="Heavy Fr. Drizzle" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌧️</div>
+                    <div class="label-name">Heavy Fr. Drizzle</div>
+                    <div class="code-display">WMO Code: 57</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">57</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Heavy Fr. Drizzle"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌧️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"heavy-freezing-drizzle.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="light-rain.jpg" alt="Light Rain" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌧️</div>
+                    <div class="label-name">Light Rain</div>
+                    <div class="code-display">WMO Code: 61</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">61</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Light Rain"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌧️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"light-rain.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="rain.png" alt="Rain" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌧️</div>
+                    <div class="label-name">Rain</div>
+                    <div class="code-display">WMO Code: 63</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">63</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Rain"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌧️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"rain.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="heavy-rain.png" alt="Heavy Rain" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌧️</div>
+                    <div class="label-name">Heavy Rain</div>
+                    <div class="code-display">WMO Code: 65</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">65</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Heavy Rain"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌧️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"heavy-rain.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="freezing-rain.png" alt="Freezing Rain" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌨️</div>
+                    <div class="label-name">Freezing Rain</div>
+                    <div class="code-display">WMO Code: 66</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">66</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Freezing Rain"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌨️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"freezing-rain.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="freezing-rain.png" alt="Heavy Fr. Rain" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌨️</div>
+                    <div class="label-name">Heavy Fr. Rain</div>
+                    <div class="code-display">WMO Code: 67</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">67</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Heavy Fr. Rain"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌨️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"freezing-rain.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="light-snow.jpg" alt="Light Snow" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌨️</div>
+                    <div class="label-name">Light Snow</div>
+                    <div class="code-display">WMO Code: 71</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">71</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Light Snow"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌨️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"light-snow.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="snow.jpg" alt="Snow" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">❄️</div>
+                    <div class="label-name">Snow</div>
+                    <div class="code-display">WMO Code: 73</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">73</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Snow"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"❄️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"snow.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="heavy-snow.png" alt="Heavy Snow" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">❄️</div>
+                    <div class="label-name">Heavy Snow</div>
+                    <div class="code-display">WMO Code: 75</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">75</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Heavy Snow"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"❄️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"heavy-snow.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="light-showers.jpg" alt="Light Showers" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌦️</div>
+                    <div class="label-name">Light Showers</div>
+                    <div class="code-display">WMO Code: 80</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">80</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Light Showers"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌦️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"light-showers.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="rain-showers.jpg" alt="Showers" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌧️</div>
+                    <div class="label-name">Showers</div>
+                    <div class="code-display">WMO Code: 81</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">81</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Showers"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌧️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"rain-showers.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="heavy-showers.jpg" alt="Heavy Showers" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">⛈️</div>
+                    <div class="label-name">Heavy Showers</div>
+                    <div class="code-display">WMO Code: 82</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">82</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Heavy Showers"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"⛈️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"heavy-showers.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="snow.jpg" alt="Snow Showers" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">🌨️</div>
+                    <div class="label-name">Snow Showers</div>
+                    <div class="code-display">WMO Code: 85</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">85</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Snow Showers"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"🌨️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"snow.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="heavy-snow.png" alt="Heavy Snow Showers" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">❄️</div>
+                    <div class="label-name">Heavy Snow Showers</div>
+                    <div class="code-display">WMO Code: 86</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">86</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Heavy Snow Showers"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"❄️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"heavy-snow.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="storm-cloud.png" alt="Thunderstorm" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">⛈️</div>
+                    <div class="label-name">Thunderstorm</div>
+                    <div class="code-display">WMO Code: 95</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">95</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Thunderstorm"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"⛈️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"storm-cloud.png"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="image-container">
+                    <img src="thunderstorm2.jpg" alt="Thunderstorm" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <div class="label-badge badge-exists">✓ IMAGE FOUND</div>
+                    <div class="icon-display">⛈️</div>
+                    <div class="label-name">Thunderstorm</div>
+                    <div class="code-display">WMO Code: 96</div>
+                    <div class="json-data">
+                        {
+  <span class="json-key">"code"</span>: <span class="json-number">96</span>,
+  <span class="json-key">"label"</span>: <span class="json-string">"Thunderstorm"</span>,
+  <span class="json-key">"icon"</span>: <span class="json-string">"⛈️"</span>,
+  <span class="json-key">"image"</span>: <span class="json-string">"thunderstorm2.jpg"</span>
+}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
