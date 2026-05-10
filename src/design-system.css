@@ -1508,6 +1508,134 @@ body {
 
 .afire-src-link:hover { text-decoration: underline; }
 
+/* ── Distance toggle (ActiveFiresCard) ───────────────────────────────── */
+
+/*
+ * Segmented pill group — mirrors .radar-layer-toggle / .unit-toggle.
+ * Active state uses the fire palette instead of plain white so the
+ * control reads as part of the fire card family.
+ */
+.afire-distance-toggle {
+  display: flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 3px;
+  gap: 2px;
+  align-self: flex-start;   /* don't stretch to full card width */
+}
+
+.afire-distance-btn {
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 4px 12px;
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  background: transparent;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.afire-distance-btn:hover:not(.afire-distance-btn--active) {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.afire-distance-btn--active {
+  background: var(--fire-surface);
+  color: var(--fire-accent);
+  /* Subtle inner border so it doesn't float without contrast */
+  box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.25);
+}
+
+/* Overflow hint shown when the range has more than MAX_SHOWN fires */
+.afire-overflow {
+  font-size: var(--text-xs);
+  color: var(--dim);
+  letter-spacing: 0.3px;
+  padding: var(--sp-2) 0 0;
+  border-top: 1px solid var(--border);
+  margin-top: var(--sp-1);
+}
+
+/* ── Distance filter bar (FireMapsTable) ─────────────────────────────── */
+
+/*
+ * A slim row that sits between the header and the first fire-map row.
+ * Uses the same horizontal padding as .firemap-header for alignment.
+ */
+.firemap-distance-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-5);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  flex-wrap: wrap;
+}
+
+.firemap-distance-label {
+  font-size: var(--text-2xs);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  white-space: nowrap;
+  margin-right: var(--sp-1);
+}
+
+.firemap-distance-btn {
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 3px 10px;
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  background: transparent;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.firemap-distance-btn:hover:not(.firemap-distance-btn--active) {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+/* Active pill uses accent (blue) to match the NJ scope label */
+.firemap-distance-btn--active {
+  background: var(--accent-glow);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+/* "✕ All" clear button — ghost, no border fill */
+.firemap-distance-clear {
+  border: none;
+  border-radius: var(--r-pill);
+  padding: 3px 8px;
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  background: transparent;
+  color: var(--dim);
+  transition: color 0.15s;
+  margin-left: auto;   /* push to the far right of the bar */
+}
+
+.firemap-distance-clear:hover { color: var(--text); }
+
+/* Empty state shown when no maps match the selected distance */
+.firemap-empty {
+  padding: var(--sp-4) var(--sp-5);
+  font-size: var(--text-sm);
+  color: var(--dim);
+  letter-spacing: 0.3px;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    RESPONSIVE
 ───────────────────────────────────────────────────────────────────────── */

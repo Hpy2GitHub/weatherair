@@ -21,15 +21,13 @@ const NIFC_URL =
   'https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/' +
   'USA_Wildfires_v1/FeatureServer/0/query';
 
-// Only fields confirmed present in this layer's schema.
-// POOState and ModifiedOnDateTime_dt are NOT in this service — including
-// them causes ArcGIS to reject the entire query with "Invalid query parameters".
 const FIELDS =
   'IncidentName,IncidentTypeCategory,UniqueFireIdentifier,' +
   'DailyAcres,PercentContained,FireDiscoveryDateTime,FireDiscoveryAge';
 
 const MAX_SHOWN = 6;
-const NEARBY_MI = 500;
+const DISTANCE_OPTIONS = [50, 100, 500];
+const DEFAULT_DISTANCE = 500;
 
 // ── Utilities ────────────────────────────────────────────────────────────────
 
@@ -82,9 +80,7 @@ function containedColor(pct) {
 // ── Sub-components ───────────────────────────────────────────────────────────
 
 function FireRow({ fire, userLat, userLon }) {
-  const dist = fmtDistance(
-    distanceMi(userLat, userLon, fire.lat, fire.lon)
-  );
+  const dist = fmtDistance(distanceMi(userLat, userLon, fire.lat, fire.lon));
   const pct = fire.PercentContained;
   const pctStr = pct != null ? `${Math.round(pct)}%` : '—';
 
@@ -130,6 +126,23 @@ function FireRow({ fire, userLat, userLon }) {
   );
 }
 
+function DistanceToggle({ selected, onChange }) {
+  return (
+    <div className="afire-distance-toggle" role="group" aria-label="Filter by distance">
+      {DISTANCE_OPTIONS.map((d) => (
+        <button
+          key={d}
+          className={`afire-distance-btn${selected === d ? ' afire-distance-btn--active' : ''}`}
+          onClick={() => onChange(d)}
+          aria-pressed={selected === d}
+        >
+          {d} mi
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Skeleton() {
   return (
     <div className="afire-skeleton-list">
@@ -146,10 +159,14 @@ function Skeleton() {
 // ── Main component ───────────────────────────────────────────────────────────
 
 export default function ActiveFiresCard({ lat, lon }) {
-  const [fires, setFires] = useState(null);   // null = loading, [] = empty
+  const [allFires, setAllFires] = useState(null); // null = loading, [] = empty; holds ALL fetched fires
   const [error, setError] = useState(null);
   const [total, setTotal] = useState(null);
+  const [nearbyMi, setNearbyMi] = useState(
+    () => Number(localStorage.getItem('afire-distance')) || DEFAULT_DISTANCE
+  );
 
+  // Fetch once on mount / when coordinates change — distance filter is client-side
   useEffect(() => {
     if (lat == null || lon == null) return;
 
@@ -159,7 +176,6 @@ export default function ActiveFiresCard({ lat, lon }) {
       returnGeometry: 'true',
       outSR: '4326',
       f: 'json',
-      // pull all current incidents — typically a few hundred, well under 2 MB
       resultRecordCount: '2000',
     });
 
@@ -188,10 +204,9 @@ export default function ActiveFiresCard({ lat, lon }) {
             ...f,
             _dist: distanceMi(lat, lon, f.lat, f.lon),
           }))
-          .sort((a, b) => a._dist - b._dist)
-          .slice(0, MAX_SHOWN);
+          .sort((a, b) => a._dist - b._dist);
 
-        setFires(enriched);
+        setAllFires(enriched);
       })
       .catch((err) => {
         if (!cancelled) setError(err.message);
@@ -202,7 +217,9 @@ export default function ActiveFiresCard({ lat, lon }) {
     };
   }, [lat, lon]);
 
-  const nearby = fires?.filter((f) => f._dist <= NEARBY_MI).length ?? 0;
+  // Client-side distance filter + cap display count
+  const firesInRange = allFires?.filter((f) => f._dist <= nearbyMi) ?? [];
+  const displayFires = firesInRange.slice(0, MAX_SHOWN);
 
   return (
     <section className="fire-card active-fires-card" aria-label="Active wildfires">
@@ -220,27 +237,28 @@ export default function ActiveFiresCard({ lat, lon }) {
         )}
       </div>
 
+      {/* Distance selector */}
+      <DistanceToggle selected={nearbyMi} onChange={setNearbyMi} />
+
       {/* Nearby callout */}
-      {fires != null && (
+      {allFires != null && (
         <div className="afire-nearby-banner">
-          {nearby === 0
-            ? `No active fires within ${NEARBY_MI} mi — showing nearest`
-            : `${nearby} active fire${nearby !== 1 ? 's' : ''} within ${NEARBY_MI} mi of your location`}
+          {firesInRange.length === 0
+            ? `No active fires within ${nearbyMi} mi of your location`
+            : `${firesInRange.length} active fire${firesInRange.length !== 1 ? 's' : ''} within ${nearbyMi} mi of your location`}
         </div>
       )}
 
       {/* Content */}
       {error ? (
-        <p className="afire-error">
-          Couldn&apos;t load fire data — {error}
-        </p>
-      ) : fires == null ? (
+        <p className="afire-error">Couldn&apos;t load fire data — {error}</p>
+      ) : allFires == null ? (
         <Skeleton />
-      ) : fires.length === 0 ? (
-        <p className="afire-empty">No active fire incidents reported.</p>
+      ) : displayFires.length === 0 ? (
+        <p className="afire-empty">No active fire incidents within {nearbyMi} mi.</p>
       ) : (
         <div className="afire-list">
-          {fires.map((fire, i) => (
+          {displayFires.map((fire, i) => (
             <FireRow
               key={fire.UniqueFireIdentifier ?? i}
               fire={fire}
@@ -248,6 +266,11 @@ export default function ActiveFiresCard({ lat, lon }) {
               userLon={lon}
             />
           ))}
+          {firesInRange.length > MAX_SHOWN && (
+            <p className="afire-overflow">
+              +{firesInRange.length - MAX_SHOWN} more within {nearbyMi} mi — widen your search or zoom in on a map.
+            </p>
+          )}
         </div>
       )}
 
