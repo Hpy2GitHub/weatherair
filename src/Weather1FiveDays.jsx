@@ -12,7 +12,11 @@ const WMO_ICON = {
 
 function formatDay(dateStr, index) {
   const d = new Date(dateStr)
-  if (index === 0) return 'Today'
+  const today = new Date()
+  // Check if it's actually today
+  if (d.toDateString() === today.toDateString()) {
+    return 'Today'
+  }
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   return days[d.getDay()]
 }
@@ -30,12 +34,20 @@ function getPrecipClass(prob) {
 export default function Weather1FiveDays({ daily, unit }) {
   if (!daily || !daily.time) return null
 
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
   return (
     <div className="card fade-in-3">
       <p className="section-label">Daily Forecast</p>
 
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {daily.time.map((dateStr, i) => {
+          const date = new Date(dateStr)
+          
+          // Skip past dates
+          if (date < today) return null
+          
           const dayLabel = formatDay(dateStr, i)
           const dateNum  = formatDate(dateStr)
           const hi       = Math.round(daily.temperature_2m_max?.[i] ?? 0)
