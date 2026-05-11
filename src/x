@@ -1,7 +1,0 @@
-// instead of:
-//const [nearbyMi, setNearbyMi] = useState(DEFAULT_DISTANCE);
-
-// use:
-const [nearbyMi, setNearbyMi] = useState(
-  () => Number(localStorage.getItem('afire-distance')) || DEFAULT_DISTANCE
-);
