@@ -3174,3 +3174,127 @@ input:disabled + .toggle-slider {
   padding-top: 5px; 
 }
 .ww-day-accent { color: #00d4ff; font-weight: bold; }
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+   WEATHER1FIVEDAY FORECAST  (DailyForecast component)
+───────────────────────────────────────────────────────────────────────── */
+
+.df-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--text-sm);
+}
+
+.df-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+/* ── Column 1: Day + Date ───────────────────────────────────────────── */
+.df-day-col {
+  width: 60px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.df-day-name {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.df-row:first-child .df-day-name {
+  color: var(--text);
+}
+
+.df-day-date {
+  font-size: var(--text-xs);
+  color: var(--dim);
+}
+
+.df-row:first-child .df-day-date {
+  color: var(--muted);
+}
+
+/* ── Column 2: Icon + Temps ─────────────────────────────────────────── */
+.df-weather-col {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.df-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  width: 30px;
+  text-align: center;
+  line-height: 1;
+}
+
+.df-temps {
+  display: flex;
+  gap: var(--sp-3);
+  font-family: var(--serif);
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.df-high {
+  color: var(--text);
+}
+
+.df-low {
+  color: var(--dim);
+}
+
+/* ── Column 3: Precip ───────────────────────────────────────────────── */
+.df-precip-col {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-shrink: 0;
+}
+
+.df-droplet {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.df-row:first-chilE .df-droplet {
+  opacity: 0.9;
+}
+
+.df-precip-amount {
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  color: var(--dim);
+  min-width: 36px;
+  text-align: right;
+}
+
+.df-precip-prob {
+  font-family: var(--mono);
+  font-size: var(--text-sm);
+  color: var(--dim);
+  min-width: 36px;
+  text-align: right;
+}
+
+.df-row:first-child .df-precip-prob {
+  color: var(--muted);
+}
+
+/* Color variants for when precip probability is notable */
+.df-precip-prob--notable {
+  color: var(--accent) !important;
+}
+
+.df-precip-prob--likely {
+  color: var(--status-orange) !important;
+}

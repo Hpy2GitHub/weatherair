@@ -34,6 +34,7 @@ import DewPointComfort from './DewPointComfort';
 import PressureTrend from './PressureTrend';
 import WeatherWatch from './WeatherWatch';
 import { useWeatherData } from './hooks/useWeatherData';
+import Weather1FiveDays from './Weather1FiveDays';
 
 const toC = (f) => Math.round((f - 32) * 5 / 9);
 const fmtTemp = (f, unit) => unit === 'f' ? `${Math.round(f)}°` : `${toC(f)}°`;
@@ -88,6 +89,7 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('weatherUnit', unit);
   }, [unit]);
+
 
   useEffect(() => {
     if (selectedLocation) {
@@ -239,6 +241,9 @@ export default function App() {
           <PrecipProbabilityTimeline weatherData={weather} />
         </ConditionalRenderer>
 
+        <ConditionalRenderer componentId="1weather-5days">
+          <Weather1FiveDays daily={weather?.daily} unit={unit} />
+        </ConditionalRenderer>
 
         <ConditionalRenderer componentId="dailyuv">
           <DailyUV daily={weather?.daily} />

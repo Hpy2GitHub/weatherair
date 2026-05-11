@@ -105,6 +105,14 @@ export const componentRegistry = [
     required: false,
   },
   {
+    id: '1weather-5days',
+    name: '5-Day Forecast (Table)',
+    description: 'Upcoming 5 day weather outlook',
+    defaultVisible: true,
+    category: '1weather',
+    required: false,
+  },
+  {
     id: 'forecast',
     name: '7-Day Forecast',
     description: 'Weekly weather outlook',
@@ -153,10 +161,10 @@ export const componentRegistry = [
     required: false,
   },
   {
-    id: 'debugconsole',  
+    id: 'debugconsole',
     name: 'Debug Console',
     description: 'Developer console for logging API data',
-    defaultVisible: false,  
+    defaultVisible: false,
     category: 'info',
     required: false,
   },
