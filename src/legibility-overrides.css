@@ -131,7 +131,7 @@
 
 /* Hourly bar time ticks — bigger now that am/pm → a/p */
 .ds-bar-time {
-  font-size: 16px;
+  font-size: 18px;
   opacity: 0.72;
 }
 
@@ -143,14 +143,14 @@
 
 /* ── Current-window highlight ─────────────────────────────────────────── */
 
-.ds-bar-col--now .ds-bar-time {
-  color #fff;
-  opacity: 1;
+/* Hourly bar time ticks — bigger now that am/pm → a/p */
+.ds-bar-time {
+  font-size: 18px;
+  opacity: 0.72;
 }
 
-/* Time label inside the now column is fully bright */
+/* Current-window highlight — brighter label, same size */
 .ds-bar-col--now .ds-bar-time {
   color: #fff;
   opacity: 1;
-  font-size: 13px;
 }
