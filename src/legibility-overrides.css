@@ -1,0 +1,143 @@
+/*
+ * legibility-overrides.css
+ *
+ * Import AFTER design-system.css.
+ * Targets two problems:
+ *   1. Global type scale is too small (7–15px → bumped ~2px each step)
+ *   2. --dim / --muted colours are too transparent on the dark background
+ *
+ * Only touches tokens and the specific daylength / ds- classes that need it.
+ * All other components inherit the improved tokens automatically.
+ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   TOKEN OVERRIDES
+   Bump the entire scale up by ~2px, and raise opacity floors.
+───────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Type scale — was 7 / 9 / 11 / 12 / 13 / 15 px */
+  --text-3xs:  9px;
+  --text-2xs: 11px;
+  --text-xs:  13px;
+  --text-sm:  14px;
+  --text-md:  15px;
+  --text-lg:  17px;
+
+  /* Raise the dim floor: was 0.45 → 0.60 */
+  --dim:   rgba(255, 255, 255, 0.60);
+
+  /* Raise muted slightly too: was 0.65 → 0.78 */
+  --muted: rgba(255, 255, 255, 0.78);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   DAYLENGTH CHART  — SVG labels use hardcoded px, not tokens
+───────────────────────────────────────────────────────────────────────── */
+
+/* Y-axis hour labels  (was 9px / 35% opacity) */
+.daylength-grid-label {
+  font-size: 11px;
+  fill: rgba(255, 255, 255, 0.60);
+}
+
+/* Month labels along the x-axis  (was 9px / 30% opacity) */
+.daylength-month-label {
+  font-size: 11px;
+  fill: rgba(255, 255, 255, 0.60);
+}
+
+/* Equinox / solstice tick labels  (was 8px / 60% opacity) */
+.daylength-marker-label {
+  font-size: 10px;
+  opacity: 0.85;
+}
+
+/* "today" label below the chart  (was 8px / 70% opacity) */
+.daylength-today-label {
+  font-size: 10px;
+  opacity: 0.90;
+}
+
+/* Date sub-line inside each stat card  (was 9px / 50% opacity) */
+.daylength-stat-date {
+  font-size: 11px;
+  opacity: 0.72;
+}
+
+/* Latitude context note at bottom  (was 7px / --dim) */
+.daylength-lat-note {
+  font-size: 11px;          /* was --text-3xs = 7px */
+  color: var(--dim);        /* inherits new 0.60 value */
+}
+
+/* Stat-card value numbers  (was --text-md = 13px) */
+.daylength-stat-value {
+  font-size: 16px;
+}
+
+/* Stat-card label eyebrow  (was --text-2xs = 9px) */
+.daylength-stat-label {
+  font-size: 11px;
+  color: var(--muted);      /* inherits new 0.78 value */
+}
+
+/* Range badge in the year selector  (was --text-2xs = 9px) */
+.daylength-range-badge {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   SECTION LABEL eyebrow  (shared across many cards)
+   Was --text-2xs = 9px / --dim = 0.45
+───────────────────────────────────────────────────────────────────────── */
+.section-label {
+  font-size: 11px;
+  color: var(--dim);        /* inherits new 0.60 value */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   DAY SNAPSHOT  (DaySnapshot.jsx / day-snapshot.css)
+   These mirror common patterns in that file — adjust names if yours differ.
+───────────────────────────────────────────────────────────────────────── */
+
+/* Condition description under the art  */
+.ds-condition {
+  font-size: 15px;
+}
+
+/* High/low range row and individual temp values */
+.ds-temp-range,
+.ds-temp-low {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* "Feels like" label */
+.ds-feels-label {
+  font-size: 12px;
+  opacity: 0.80;
+}
+
+/* Rain section header label */
+.ds-rain-label {
+  font-size: 13px;
+}
+
+/* "Most likely Xpm" secondary rain note */
+.ds-rain-peak {
+  font-size: 12px;
+  opacity: 0.80;
+}
+
+/* Hourly bar time ticks  */
+.ds-bar-time {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* "No rain expected" placeholder */
+.ds-no-rain {
+  font-size: 13px;
+  opacity: 0.70;
+}
