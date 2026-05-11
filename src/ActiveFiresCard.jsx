@@ -162,9 +162,7 @@ export default function ActiveFiresCard({ lat, lon }) {
   const [allFires, setAllFires] = useState(null); // null = loading, [] = empty; holds ALL fetched fires
   const [error, setError] = useState(null);
   const [total, setTotal] = useState(null);
-  const [nearbyMi, setNearbyMi] = useState(
-    () => Number(localStorage.getItem('afire-distance')) || DEFAULT_DISTANCE
-  );
+  const [nearbyMi, setNearbyMi] = useState(DEFAULT_DISTANCE);
 
   // Fetch once on mount / when coordinates change — distance filter is client-side
   useEffect(() => {
@@ -239,15 +237,6 @@ export default function ActiveFiresCard({ lat, lon }) {
 
       {/* Distance selector */}
       <DistanceToggle selected={nearbyMi} onChange={setNearbyMi} />
-
-      {/* Nearby callout */}
-      {allFires != null && (
-        <div className="afire-nearby-banner">
-          {firesInRange.length === 0
-            ? `No active fires within ${nearbyMi} mi of your location`
-            : `${firesInRange.length} active fire${firesInRange.length !== 1 ? 's' : ''} within ${nearbyMi} mi of your location`}
-        </div>
-      )}
 
       {/* Content */}
       {error ? (
