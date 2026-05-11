@@ -16,7 +16,9 @@
 // NOTE: apparent_temperature_max/min are not in the default API call.
 // Add them to the daily fields in useWeatherData to unlock feels-like display.
 
-import './day-snapshot.css';
+//import './day-snapshot.css';
+import './design-system.css';
+import './legibility-overrides.css';
 
 const WMO = {
   0:  { label: 'Clear sky',          type: 'sunny'  },
@@ -124,9 +126,9 @@ const ART = {
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 const formatHour = (h) => {
-  if (h === 0)  return '12am';
-  if (h === 12) return '12pm';
-  return h < 12 ? `${h}am` : `${h - 12}pm`;
+  if (h === 0)  return '12a';
+  if (h === 12) return '12p';
+  return h < 12 ? `${h}a` : `${h - 12}p`;
 };
 
 // Blue scale legible on dark backgrounds — maps probability to opacity/shade.

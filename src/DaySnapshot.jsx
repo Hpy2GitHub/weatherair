@@ -125,9 +125,16 @@ const ART = {
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 const formatHour = (h) => {
-  if (h === 0)  return '12am';
-  if (h === 12) return '12pm';
-  return h < 12 ? `${h}am` : `${h - 12}pm`;
+  if (h === 0)  return '12a';
+  if (h === 12) return '12p';
+  return h < 12 ? `${h}a` : `${h - 12}p`;
+};
+
+// Which 3-hour bucket (0, 3, 6 … 21) contains the current clock time?
+// Returns null when this card isn't showing today.
+const getCurrentWindowHour = (isToday) => {
+  if (!isToday) return null;
+  return Math.floor(new Date().getHours() / 3) * 3;
 };
 
 // Blue scale legible on dark backgrounds — maps probability to opacity/shade.
@@ -165,6 +172,9 @@ export default function DaySnapshot({
 
   // 8 ticks across the day, one every 3 hours.
   const timeline = hourly.filter(h => h.hour % 3 === 0).slice(0, 8);
+
+  // Highlight the bar whose 3-hour window contains the current time (today only).
+  const currentWindowHour = getCurrentWindowHour(label === 'Today');
 
   return (
     <article
@@ -227,18 +237,21 @@ export default function DaySnapshot({
             role="img"
             aria-label={`Hourly rain chance. Peak ${Math.round(maxRain)}% around ${peakHour?.hour != null ? formatHour(peakHour.hour) : 'midday'}`}
           >
-            {timeline.map((h) => (
-              <div key={h.hour} className="ds-bar-col">
-                <div
-                  className="ds-bar"
-                  style={{
-                    height: `${Math.max(4, h.precipitation_probability ?? 0)}%`,
-                    background: rainBarColor(h.precipitation_probability ?? 0),
-                  }}
-                />
-                <span className="ds-bar-time">{formatHour(h.hour)}</span>
-              </div>
-            ))}
+            {timeline.map((h) => {
+              const isNow = h.hour === currentWindowHour;
+              return (
+                <div key={h.hour} className={`ds-bar-col${isNow ? ' ds-bar-col--now' : ''}`}>
+                  <div
+                    className="ds-bar"
+                    style={{
+                      height: `${Math.max(4, h.precipitation_probability ?? 0)}%`,
+                      background: rainBarColor(h.precipitation_probability ?? 0),
+                    }}
+                  />
+                  <span className="ds-bar-time">{formatHour(h.hour)}</span>
+                </div>
+              );
+            })}
           </div>
         )}
 

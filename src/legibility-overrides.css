@@ -98,7 +98,6 @@
 
 /* ─────────────────────────────────────────────────────────────────────────
    DAY SNAPSHOT  (DaySnapshot.jsx / day-snapshot.css)
-   These mirror common patterns in that file — adjust names if yours differ.
 ───────────────────────────────────────────────────────────────────────── */
 
 /* Condition description under the art  */
@@ -124,20 +123,34 @@
   font-size: 13px;
 }
 
-/* "Most likely Xpm" secondary rain note */
+/* "Most likely Xp" secondary rain note */
 .ds-rain-peak {
   font-size: 12px;
   opacity: 0.80;
 }
 
-/* Hourly bar time ticks  */
+/* Hourly bar time ticks — bigger now that am/pm → a/p */
 .ds-bar-time {
-  font-size: 11px;
-  opacity: 0.75;
+  font-size: 16px;
+  opacity: 0.72;
 }
 
 /* "No rain expected" placeholder */
 .ds-no-rain {
   font-size: 13px;
   opacity: 0.70;
+}
+
+/* ── Current-window highlight ─────────────────────────────────────────── */
+
+.ds-bar-col--now .ds-bar-time {
+  color #fff;
+  opacity: 1;
+}
+
+/* Time label inside the now column is fully bright */
+.ds-bar-col--now .ds-bar-time {
+  color: #fff;
+  opacity: 1;
+  font-size: 13px;
 }
