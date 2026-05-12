@@ -57,9 +57,9 @@ export default function WeatherWatch({ current, daily, unit }) {
   console.log(`WeatherWatch: weather_code=${current.weather_code} cond=${cond.image}`);
   
   // --- TEMPORARY HACK: Force thunderstorm code for testing (DELETE THIS LINE) ---
- current.weather_code = 95;
+ //current.weather_code = 95;
  // remove after testing 
- console.log('THUNDERSTORM HACK ACTIVE. isThunderstorm will be:', [95, 96, 99].includes(current.weather_code));
+ //console.log('THUNDERSTORM HACK ACTIVE. isThunderstorm will be:', [95, 96, 99].includes(current.weather_code));
   
   const precip = daily?.precipitation_probability_max?.[0];
   const windUnit = unit === 'ms' ? 'm/s' : 'km/h';
