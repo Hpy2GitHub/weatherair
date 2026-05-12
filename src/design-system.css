@@ -3095,6 +3095,19 @@ input:disabled + .toggle-slider {
 .pres-ref-item--low  .pres-ref-dot { background: var(--status-red); }
 
 /* ----------NEW-----------*/
+.ww-content-layer {
+  position: relative;      /* ADD THIS — needed for z-index to work */
+  z-index: 4;              /* ADD THIS — above the glass overlay */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 35px 20px;
+  color: white;
+  text-align: center;
+}
+
 .ww-watch-case {
   width: 340px;
   height: 340px;
@@ -3120,14 +3133,14 @@ input:disabled + .toggle-slider {
   inset: 0;
   background-size: cover;
   background-position: center;
-  z-index: -2;
+  z-index: 0;
 }
 
 .ww-glass-overlay {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: -1;
+  z-index: 3;
 }
 
 /* THIS SECTION FIXES THE BUNCHING ISSUE */
@@ -3298,3 +3311,39 @@ input:disabled + .toggle-slider {
 .df-precip-prob--likely {
   color: var(--status-orange) !important;
 }
+
+/* --------------- WEATHER WATCH --------------- */
+
+/* Nighttime darkening overlay - adjust the alpha in rgba for more/less darkness */
+.ww-night-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);  /* <-- Adjust darkness here: 0.5 = 50% dark */
+  z-index: 2;
+  pointer-events: none;  /* allows clicks to pass through */
+}
+
+/* Thundercloud container - centers the image */
+.ww-thundercloud-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: -1; /* hide */
+  pointer-events: none;
+}
+
+/* Thundercloud image - adjust width/max-width for size */
+.ww-thundercloud-img {
+  width: 20%;           /* <-- Edit this to make larger/smaller */
+  max-width: 100px;     /* <-- Or constrain with max-width */
+  height: auto;         /* keeps aspect ratio */
+  opacity: 0.85;        /* <-- Adjust transparency if needed */
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.ww-thundercloud-day {
+  background: radial-gradient(ellipse, rgba(0,0,0,0.2) 0%, transparent 70%);
+}
+
